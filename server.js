@@ -22,8 +22,8 @@ if (!process.env.PROJECT_SECRET) {
     delete process.env.PROJECT_SECRET;
   }
 }
-const port = Number(process.env.PORT) || 5173;
-const host = process.env.HOST || "127.0.0.1";
+const port = Number(process.env.PORT) || 3000;
+const host = process.env.HOST || "0.0.0.0";
 const auth = createAuthHandler();
 const vite = production ? null : await (await import("vite")).createServer({
   configFile: path.join(root, "vite.config.js"),
