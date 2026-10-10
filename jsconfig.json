@@ -1,0 +1,7 @@
+   {
+     "compilerOptions": {
+       "forceConsistentCasingInFileNames": false,
+       "jsx": "react-jsx"
+     },
+     "include": ["src"]
+   }

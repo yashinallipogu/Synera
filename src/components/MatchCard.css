@@ -1,0 +1,80 @@
+.match-card {
+  padding: 22px;
+  margin-bottom: 14px;
+  border-radius: var(--r);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: rise 0.5s ease both;
+  animation-delay: calc(var(--i) * 70ms);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.match-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(134, 124, 175, 0.55);
+  box-shadow: 0 24px 60px -24px rgba(60, 106, 169, 0.8);
+}
+
+.match-top { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.match-info { flex: 1; min-width: 0; }
+.match-name { font-family: var(--display); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.02em; }
+.match-sub { margin-top: 2px; color: var(--text-soft); font-size: 0.85rem; }
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  background: var(--brand);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #fff;
+  box-shadow: 0 8px 22px -6px rgba(134, 124, 175, 0.7);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge.perfect { color: var(--red-tint); background: rgba(199, 93, 96, 0.16); border: 1px solid rgba(199, 93, 96, 0.4); }
+.badge.helps { color: var(--blue-tint); background: rgba(60, 106, 169, 0.18); border: 1px solid rgba(60, 106, 169, 0.45); }
+
+.match-rows { display: grid; gap: 12px; }
+.match-row { display: flex; align-items: center; gap: 14px; }
+.row-label {
+  width: 96px;
+  flex-shrink: 0;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.row-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.match-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.free { color: var(--text-soft); font-size: 0.85rem; }
+
+@media (max-width: 560px) {
+  .match-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .match-footer { flex-direction: column; align-items: stretch; }
+  .match-footer .btn { width: 100%; }
+}
