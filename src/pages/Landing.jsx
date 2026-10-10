@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import Nav from "../components/Nav";
+import SkillGroup from "../components/SkillGroup";
 import { SKILLS } from "../data/skills";
 import users from "../data/users.json";
 import { getMatches } from "../lib/match";
@@ -17,6 +18,10 @@ const STEPS = [
 export default function Landing({ onEnter }) {
   const [offers, setOffers] = useState(["Python"]);
   const [wants, setWants] = useState(["Figma"]);
+  const [customSkills, setCustomSkills] = useState([]);
+  const skills = [...SKILLS, ...customSkills];
+  const enterWithSkills = () => onEnter({ offers, wants, customSkills });
+  const addSkill = (skill) => setCustomSkills((current) => [...current, skill]);
 
   const matches = useMemo(
     () => getMatches({ id: "me", offers, wants, availability: AVAIL }, users),
@@ -34,6 +39,10 @@ export default function Landing({ onEnter }) {
       {/* Hero */}
       <section className="hero">
         <div className="hero-copy">
+          <div className="window-titlebar" aria-hidden="true">
+            <span>dialog Window</span>
+            <span className="window-close">×</span>
+          </div>
           <span className="eyebrow rise" style={{ "--d": "0ms" }}>Campus skill exchange</span>
           <h1 className="display hero-title rise" style={{ "--d": "80ms" }}>
             Trade what you <span className="grad-text">know</span> for what you{" "}
@@ -45,7 +54,7 @@ export default function Landing({ onEnter }) {
           </p>
           <div className="hero-cta rise" style={{ "--d": "240ms" }}>
             <button className="btn lg" onClick={scrollToMatcher}>Try the matcher</button>
-            <button className="btn lg ghost" onClick={() => onEnter()}>Browse matches</button>
+            <button className="btn lg ghost" onClick={enterWithSkills}>Browse matches</button>
           </div>
           <div className="hero-stats rise" style={{ "--d": "320ms" }}>
             <div><b className="grad-text">{users.length}</b><span>students</span></div>
@@ -62,25 +71,23 @@ export default function Landing({ onEnter }) {
               <span className="live"><i /> {matches.length} matches</span>
             </div>
 
-            <div className="pick-group">
-              <p className="pick-title">I can teach</p>
-              <div className="chips">
-                {SKILLS.map((s) => (
-                  <button key={s} className={"pick offer" + (offers.includes(s) ? " on" : "")}
-                    onClick={() => setOffers(toggle(offers, s))}>{s}</button>
-                ))}
-              </div>
-            </div>
+            <SkillGroup
+              label="I can teach"
+              skills={skills}
+              selected={offers}
+              tone="offer"
+              onToggle={(skill) => setOffers(toggle(offers, skill))}
+              onAddSkill={addSkill}
+            />
 
-            <div className="pick-group">
-              <p className="pick-title">I want to learn</p>
-              <div className="chips">
-                {SKILLS.map((s) => (
-                  <button key={s} className={"pick want" + (wants.includes(s) ? " on" : "")}
-                    onClick={() => setWants(toggle(wants, s))}>{s}</button>
-                ))}
-              </div>
-            </div>
+            <SkillGroup
+              label="I want to learn"
+              skills={skills}
+              selected={wants}
+              tone="want"
+              onToggle={(skill) => setWants(toggle(wants, skill))}
+              onAddSkill={addSkill}
+            />
 
             <div className="results">
               {matches.length === 0 && (
@@ -101,7 +108,7 @@ export default function Landing({ onEnter }) {
             </div>
 
             <button className="btn lg full" disabled={matches.length === 0}
-              onClick={() => onEnter({ offers, wants })}>
+              onClick={enterWithSkills}>
               See all {matches.length} matches {perfect > 0 ? "(" + perfect + " perfect)" : ""} →
             </button>
           </div>
@@ -111,7 +118,7 @@ export default function Landing({ onEnter }) {
       {/* Marquee */}
       <div className="marquee">
         <div className="marquee-track">
-          {[...SKILLS, ...SKILLS].map((s, i) => (
+          {[...skills, ...skills].map((s, i) => (
             <span key={i} className="marquee-item">{s}</span>
           ))}
         </div>
@@ -143,7 +150,7 @@ export default function Landing({ onEnter }) {
             <span className="badge perfect">Live now</span>
             <h3>SkillSwap</h3>
             <p>Trade skills one-to-one. Perfect swaps ranked first, with reputation built from completed sessions.</p>
-            <button className="btn" onClick={() => onEnter()}>Open SkillSwap →</button>
+            <button className="btn" onClick={enterWithSkills}>Open SkillSwap →</button>
           </div>
           <div className="panel cat dim">
             <span className="badge helps">Coming soon</span>
@@ -161,7 +168,7 @@ export default function Landing({ onEnter }) {
       {/* Final CTA */}
       <section className="cta">
         <h2 className="display">Everyone is good at something.<br />Go find who needs it.</h2>
-        <button className="btn lg ghost" onClick={() => onEnter()}>Open Synera →</button>
+        <button className="btn lg ghost" onClick={enterWithSkills}>Open Synera →</button>
       </section>
 
       <footer className="foot">Synera · Built at the hackathon</footer>
