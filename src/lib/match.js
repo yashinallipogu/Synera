@@ -4,14 +4,13 @@ export function getMatches(me, users) {
     .map((u) => {
       const theyTeachMe = u.offers.filter((s) => me.wants.includes(s));
       const iTeachThem = me.offers.filter((s) => u.wants.includes(s));
-      const timeOverlap = u.availability.filter((t) => me.availability.includes(t));
       const type =
         theyTeachMe.length && iTeachThem.length ? "perfect"
         : theyTeachMe.length ? "helps-you"
         : null;
       return {
-        user: u, type, theyTeachMe, iTeachThem, timeOverlap,
-        score: theyTeachMe.length + iTeachThem.length + timeOverlap.length,
+        user: u, type, theyTeachMe, iTeachThem,
+        score: theyTeachMe.length + iTeachThem.length,
       };
     })
     .filter((m) => m.type)

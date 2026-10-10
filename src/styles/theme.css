@@ -142,6 +142,17 @@ button { font-family: inherit; }
   box-shadow: 0 6px 20px -4px rgba(134, 124, 175, 0.7);
 }
 .brand-name { font-family: var(--display); font-weight: 800; font-size: 1.2rem; letter-spacing: -0.03em; }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.nav-text-action {
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.nav-text-action:hover { color: var(--text); }
 
 /* ---------- Type helpers ---------- */
 .display { font-family: var(--display); font-weight: 800; letter-spacing: -0.035em; line-height: 1; }
@@ -284,6 +295,8 @@ button { font-family: inherit; }
 .side { position: sticky; top: 96px; display: grid; gap: 16px; }
 
 .me-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.me-details { flex: 1; min-width: 0; }
+.me-name-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .me-avatar {
   width: 52px;
   height: 52px;
@@ -298,6 +311,17 @@ button { font-family: inherit; }
 .me-name { font-family: var(--display); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; }
 .me-sub { color: var(--text-soft); font-size: 0.85rem; }
 .me-group { margin-top: 18px; display: grid; gap: 10px; }
+.me-group-head { display: flex; align-items: center; justify-content: space-between; }
+.edit-skill {
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--blue-tint);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.edit-skill:hover { color: var(--text); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -308,6 +332,7 @@ button { font-family: inherit; }
 .feed-head { margin-bottom: 22px; animation: rise 0.6s ease both; }
 .feed-head h1 { font-size: clamp(2.2rem, 4.5vw, 3.4rem); }
 .feed-head p { margin-top: 12px; max-width: 520px; color: var(--text-soft); line-height: 1.6; }
+.feed-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 18px; }
 
 .seg {
   display: inline-flex;

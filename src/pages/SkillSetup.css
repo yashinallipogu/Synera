@@ -1,0 +1,197 @@
+.skill-page {
+  max-width: 900px;
+  margin: 56px auto 80px;
+}
+
+.skill-progress {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0;
+  margin: 0 0 64px;
+  list-style: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.skill-progress li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px 16px 0;
+  color: var(--text-dim);
+  border-bottom: 2px solid transparent;
+}
+
+.skill-progress li.current {
+  color: var(--text);
+  border-color: var(--red);
+}
+
+.skill-progress li.complete { color: var(--text-soft); }
+.skill-progress li.complete span { color: var(--blue-tint); }
+.skill-progress li span {
+  font-family: var(--display);
+  font-weight: 800;
+  color: var(--text-dim);
+}
+
+.skill-progress li.current span { color: var(--red-tint); }
+.skill-progress li b { font-size: 0.88rem; }
+.match-progress { margin-top: 40px; margin-bottom: 0; }
+
+.skill-heading {
+  display: grid;
+  gap: 18px;
+  max-width: 680px;
+  margin-bottom: 38px;
+}
+
+.skill-heading h1 { font-size: clamp(2.7rem, 7vw, 4.7rem); }
+.skill-heading p { max-width: 560px; color: var(--text-soft); font-size: 1.05rem; line-height: 1.65; }
+
+.skill-picker {
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.skill-picker-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.skill-count { color: var(--text-soft); font-size: 0.86rem; font-weight: 600; }
+
+.skill-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.skill-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.skill-option:hover { border-color: var(--text-dim); transform: translateY(-1px); }
+.skill-option.selected.teach { border-color: var(--blue-light); background: rgba(60, 106, 169, 0.25); color: #dce8fb; }
+.skill-option.selected.learn { border-color: var(--red); background: rgba(199, 93, 96, 0.2); color: #ffe0e1; }
+
+.skill-option-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  font-size: 0.8rem;
+}
+
+.skill-option.selected .skill-option-mark { border-color: currentColor; }
+
+.skill-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+@media (max-width: 700px) {
+  .skill-page { margin-top: 36px; }
+  .skill-progress { margin-bottom: 44px; }
+  .skill-progress li { align-items: flex-start; flex-direction: column; gap: 5px; }
+    .skill-progress li b { font-size: 0.68rem; }
+  .skill-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .skill-footer { align-items: stretch; flex-direction: column-reverse; }
+  .skill-footer .btn { width: 100%; }
+}
+
+.signup-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.signup-field { display: grid; gap: 10px; }
+.signup-field input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  outline: none;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.signup-field input::placeholder { color: var(--text-dim); }
+.signup-field input:focus { border-color: var(--blue-tint); box-shadow: 0 0 0 3px rgba(143, 178, 230, 0.12); }
+.signup-field small { color: var(--text-dim); font-size: 0.76rem; }
+.phone-number-control { display: grid; grid-template-columns: minmax(150px, 0.85fr) minmax(0, 1fr); gap: 8px; }
+.phone-number-control select {
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.82rem;
+}
+.phone-number-control select:focus { outline: 2px solid var(--blue-tint); outline-offset: 1px; }
+.phone-number-control option { background: var(--bg-2); color: var(--text); }
+.signup-field small.phone-invalid { color: var(--red-tint); }
+.text-consent {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.text-consent input { flex: 0 0 auto; width: 17px; height: 17px; margin: 1px 0 0; accent-color: var(--blue-light); }
+.text-consent-note, .phone-status { grid-column: 1 / -1; color: var(--text-dim); font-size: 0.78rem; line-height: 1.5; }
+.phone-verify-row { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+.phone-verify-row > .btn { min-height: 45px; }
+.phone-code-input { display: grid; flex: 1; min-width: 210px; gap: 8px; }
+.phone-code-input > div { display: flex; gap: 8px; }
+.phone-code-input input {
+  width: 140px;
+  min-height: 45px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  letter-spacing: 0.12em;
+}
+.phone-code-input .btn { min-height: 45px; padding: 9px 14px; }
+
+@media (max-width: 380px) {
+  .skill-options { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .signup-fields { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 420px) {
+  .phone-number-control { grid-template-columns: 1fr; }
+}

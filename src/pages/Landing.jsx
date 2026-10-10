@@ -1,12 +1,7 @@
-import { useMemo, useState } from "react";
 import Nav from "../components/Nav";
 import { SKILLS } from "../data/skills";
 import users from "../data/users.json";
-import { getMatches } from "../lib/match";
 import "./Landing.css";
-
-const AVAIL = ["Tue pm", "Thu pm"];
-const toggle = (list, s) => (list.includes(s) ? list.filter((x) => x !== s) : [...list, s]);
 
 const STEPS = [
   { n: "01", t: "Pick your skills", d: "Choose what you can teach and what you want to learn. No essays, no bios." },
@@ -14,22 +9,13 @@ const STEPS = [
   { n: "03", t: "Meet and swap", d: "Pick a time and a public campus spot. Both of you leave with something new." },
 ];
 
-export default function Landing({ onEnter }) {
-  const [offers, setOffers] = useState(["Python"]);
-  const [wants, setWants] = useState(["Figma"]);
-
-  const matches = useMemo(
-    () => getMatches({ id: "me", offers, wants, availability: AVAIL }, users),
-    [offers, wants]
-  );
-  const perfect = matches.filter((m) => m.type === "perfect").length;
-
-  const scrollToMatcher = () =>
-    document.getElementById("matcher").scrollIntoView({ behavior: "smooth", block: "center" });
+export default function Landing({ onEnter, onLogin }) {
+  const scrollToSteps = () =>
+    document.getElementById("how-it-works").scrollIntoView({ behavior: "smooth" });
 
   return (
     <div className="container">
-      <Nav onEnter={onEnter} onHome={() => window.scrollTo({ top: 0, behavior: "smooth" })} />
+      <Nav onEnter={onEnter} onLogin={onLogin} onHome={() => window.scrollTo({ top: 0, behavior: "smooth" })} />
 
       {/* Hero */}
       <section className="hero">
@@ -44,8 +30,8 @@ export default function Landing({ onEnter }) {
             statistics. Every swap builds a reputation that comes from real collaboration, not likes.
           </p>
           <div className="hero-cta rise" style={{ "--d": "240ms" }}>
-            <button className="btn lg" onClick={scrollToMatcher}>Try the matcher</button>
-            <button className="btn lg ghost" onClick={() => onEnter()}>Browse matches</button>
+            <button className="btn lg" onClick={onEnter}>Create an account</button>
+            <button className="btn lg ghost" onClick={scrollToSteps}>How it works</button>
           </div>
           <div className="hero-stats rise" style={{ "--d": "320ms" }}>
             <div><b className="grad-text">{users.length}</b><span>students</span></div>
@@ -54,56 +40,18 @@ export default function Landing({ onEnter }) {
           </div>
         </div>
 
-        {/* Live matcher */}
-        <div className="matcher rise" id="matcher" style={{ "--d": "200ms" }}>
+        <div className="matcher journey rise" style={{ "--d": "200ms" }}>
           <div className="matcher-inner">
             <div className="matcher-top">
-              <span className="label">Live matcher</span>
-              <span className="live"><i /> {matches.length} matches</span>
+              <span className="label">Your next steps</span>
+              <span className="live"><i /> Takes less than a minute</span>
             </div>
-
-            <div className="pick-group">
-              <p className="pick-title">I can teach</p>
-              <div className="chips">
-                {SKILLS.map((s) => (
-                  <button key={s} className={"pick offer" + (offers.includes(s) ? " on" : "")}
-                    onClick={() => setOffers(toggle(offers, s))}>{s}</button>
-                ))}
-              </div>
-            </div>
-
-            <div className="pick-group">
-              <p className="pick-title">I want to learn</p>
-              <div className="chips">
-                {SKILLS.map((s) => (
-                  <button key={s} className={"pick want" + (wants.includes(s) ? " on" : "")}
-                    onClick={() => setWants(toggle(wants, s))}>{s}</button>
-                ))}
-              </div>
-            </div>
-
-            <div className="results">
-              {matches.length === 0 && (
-                <p className="results-empty">Pick a few skills to see who you could swap with.</p>
-              )}
-              {matches.slice(0, 3).map((m) => (
-                <div className="mini" key={m.user.id}>
-                  <div className="mini-av">{m.user.name[0]}</div>
-                  <div className="mini-info">
-                    <b>{m.user.name}</b>
-                    <span>Teaches {m.theyTeachMe.join(", ")}</span>
-                  </div>
-                  <span className={"badge " + (m.type === "perfect" ? "perfect" : "helps")}>
-                    {m.type === "perfect" ? "Perfect swap" : "Can help"}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <button className="btn lg full" disabled={matches.length === 0}
-              onClick={() => onEnter({ offers, wants })}>
-              See all {matches.length} matches {perfect > 0 ? "(" + perfect + " perfect)" : ""} →
-            </button>
+            <ol className="journey-steps">
+              <li><span>01</span><div><b>What can you teach?</b><small>Pick skills you feel confident sharing.</small></div></li>
+              <li><span>02</span><div><b>What do you want to learn?</b><small>Choose what would help you grow.</small></div></li>
+              <li><span>03</span><div><b>Meet your matches</b><small>Find students for a skill swap.</small></div></li>
+            </ol>
+            <button className="btn lg full" onClick={onEnter}>Create an account →</button>
           </div>
         </div>
       </section>
@@ -118,7 +66,7 @@ export default function Landing({ onEnter }) {
       </div>
 
       {/* How it works */}
-      <section className="section">
+      <section className="section" id="how-it-works">
         <h2 className="display section-title">
           Three steps from <span className="grad-text">stranger</span> to collaborator
         </h2>

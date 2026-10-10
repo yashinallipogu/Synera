@@ -1,16 +1,46 @@
-# React + Vite
+# Synera
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Synera helps students find campus skill-swap partners. Create an account, complete your profile, and browse ranked matches.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Requires Node.js 24 or newer.
 
-## React Compiler
+```powershell
+npm.cmd install
+npm.cmd run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Open http://127.0.0.1:5173. The dev command runs the app and its account API together.
 
-## Expanding the ESLint configuration
+## Accounts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Usernames are 3-24 characters and may contain letters, numbers, dots, dashes, and underscores. Passwords must be at least 10 characters. Password hashes and profile data are stored in `.synera/accounts.sqlite` on this machine; they are not shared across deployments. Passwords are never stored in plaintext.
+
+Students can browse matches from registered accounts, start match-only in-app chats, and propose meetups in a chat. Meetup proposals must be accepted by the other participant. Accepted meetups receive a one-hour reminder when both participants have opted in.
+
+Phone numbers are private to their owners. iMessage alerts are off by default; students must verify their number with a one-time code and explicitly opt in. Chat contents stay in Synera; iMessage alerts only say that a new chat message or meetup event is waiting.
+
+For a production build, run `npm.cmd run build` followed by `npm.cmd run preview`. Production login requires HTTPS so the session cookie can be marked secure.
+
+## Photon messaging
+
+Synera connects to a separate Spectrum iMessage service using the [stable Spectrum SDK](https://photon.codes/docs/spectrum-ts/getting-started) and [iMessage provider](https://photon.codes/docs/spectrum-ts/providers/imessage). Photon exposes a project-secret-protected send endpoint on localhost port 5190; Synera calls it from its server, never from browser code.
+
+The Photon service lives in the `synera-photon` folder in this repository. Synera loads credentials from its local `.env` at startup and falls back to the sibling `C:\Users\kingr\synera-photon` folder for existing local installs. Keep `.env` private; it is ignored by Git.
+
+Start Synera and Photon in separate PowerShell windows:
+
+```powershell
+Set-Location C:\Users\kingr\Synera
+npm.cmd run dev
+```
+
+```powershell
+Set-Location C:\Users\kingr\Synera\synera-photon
+npm.cmd run start
+```
+
+Each opted-in recipient's verified number must also be added to Photon **Users** before delivery. The shared line only reaches added iMessage users; it is not general SMS. A dedicated line is a Photon plan feature.
+
+The reminder worker runs in the Synera server and checks for accepted meetups within one hour of their start. Keep both services running for chat alerts and reminders to work. Never expose Photon credentials in browser code.

@@ -1,7 +1,7 @@
 import "./MatchCard.css";
 
-export default function MatchCard({ match, onPropose, index = 0 }) {
-  const { user, type, theyTeachMe, iTeachThem, timeOverlap } = match;
+export default function MatchCard({ match, onMessage, index = 0 }) {
+  const { user, type, theyTeachMe, iTeachThem } = match;
   const perfect = type === "perfect";
   const hue = 170 + ((user.name.charCodeAt(0) * 7) % 50);
 
@@ -36,10 +36,7 @@ export default function MatchCard({ match, onPropose, index = 0 }) {
       </div>
 
       <div className="match-footer">
-        <span className="free">
-          {timeOverlap.length > 0 ? `Both free: ${timeOverlap.join(", ")}` : "No shared times yet"}
-        </span>
-        <button className="btn" onClick={() => onPropose(match)}>Propose swap</button>
+        <button className="btn" onClick={onMessage}>Message</button>
       </div>
     </article>
   );
