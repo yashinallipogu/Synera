@@ -1,4 +1,4 @@
-export default function Nav({ onHome, onEnter, inApp }) {
+export default function Nav({ onHome, onEnter, onLogin, onLogout, inApp }) {
   return (
     <header className="nav">
       <button className="brand" onClick={onHome}>
@@ -13,9 +13,15 @@ export default function Nav({ onHome, onEnter, inApp }) {
       </nav>
 
       {inApp ? (
-        <button className="btn ghost" onClick={onHome}>Home</button>
+        <div className="nav-actions">
+          <button className="btn ghost" onClick={onHome}>Home</button>
+          {onLogout && <button className="nav-text-action" onClick={onLogout}>Log out</button>}
+        </div>
       ) : (
-        <button className="btn" onClick={() => onEnter()}>Open app</button>
+        <div className="nav-actions">
+          <button className="nav-text-action" onClick={onLogin}>Log in</button>
+          <button className="btn" onClick={onEnter}>Create account</button>
+        </div>
       )}
     </header>
   );

@@ -1,11 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Nav from "../components/Nav";
 import SkillGroup from "../components/SkillGroup";
 import MatchCard from "../components/MatchCard";
 import StudySpotMap from "../components/StudySpotMap";
-import users from "../data/users.json";
 import { SKILLS } from "../data/skills";
-import { getMatches } from "../lib/match";
 import { getSpotRating, loadSpotReviews, saveSpotReviews, STUDY_SPOTS } from "../data/studySpots";
 import "../styles/FeedFeatures.css";
 
@@ -38,28 +36,58 @@ function recommendSpot(partner, userLocation, reviews) {
   })[0];
 }
 
-export default function Feed({ profile, onHome, onProfileChange }) {
+export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditOffers, onEditWants, onOpenChat, onShowChats, onProfileChange }) {
   const [filter, setFilter] = useState("all");
-  const [activeChat, setActiveChat] = useState(null);
+  const [matches, setMatches] = useState([]);
+  const [loadError, setLoadError] = useState("");
+  const [chatError, setChatError] = useState("");
+  const [profileError, setProfileError] = useState("");
   const [activePartner, setActivePartner] = useState(null);
   const [selectedSpotId, setSelectedSpotId] = useState("hatcher");
   const [reviews, setReviews] = useState(loadSpotReviews);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
   const [reviewOpen, setReviewOpen] = useState(false);
-
-  const matches = useMemo(() => getMatches(profile, users), [profile]);
-  const perfect = matches.filter((m) => m.type === "perfect").length;
-  const shown = filter === "all" ? matches : matches.filter((m) => m.type === filter);
   const skills = [...new Set([...SKILLS, ...(profile.customSkills || [])])];
   const selectedSpot = STUDY_SPOTS.find((spot) => spot.id === selectedSpotId) || STUDY_SPOTS[0];
   const spotRating = getSpotRating(selectedSpot, reviews);
   const recommendation = recommendSpot(activePartner, profile.location, reviews);
+  const perfect = matches.filter((m) => m.type === "perfect").length;
+  const shown = filter === "all" ? matches : matches.filter((m) => m.type === filter);
 
-  const updateSkills = (field, skill) => onProfileChange({ ...profile, [field]: toggle(profile[field], skill) });
+  useEffect(() => {
+    let active = true;
+    fetch("/api/matches")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unable to load matches.");
+        if (active) setMatches(result.matches);
+      })
+      .catch((error) => { if (active) setLoadError(error.message); });
+    return () => { active = false; };
+  }, [profile]);
+
+  const openChat = async (userId) => {
+    setChatError("");
+    try {
+      await onOpenChat(userId);
+    } catch (error) {
+      setChatError(error.message || "Unable to open chat.");
+    }
+  };
+
+  const saveProfile = async (nextProfile) => {
+    setProfileError("");
+    try {
+      await onProfileChange(nextProfile);
+    } catch (error) {
+      setProfileError(error.message || "Unable to save your profile.");
+    }
+  };
+
   const addSkill = (skill) => {
     if (skills.some((existing) => existing.toLowerCase() === skill.toLowerCase())) return;
-    onProfileChange({ ...profile, customSkills: [...(profile.customSkills || []), skill] });
+    saveProfile({ ...profile, customSkills: [...(profile.customSkills || []), skill] });
   };
   const planMeetup = (match) => {
     setActivePartner(match.user);
@@ -85,37 +113,48 @@ export default function Feed({ profile, onHome, onProfileChange }) {
 
   return (
     <div className="container">
-      <Nav inApp onHome={onHome} />
+      <Nav inApp onHome={onHome} onLogout={onLogout} />
+
+      <ol className="skill-progress match-progress" aria-label="Skill matching progress">
+        <li className="complete"><span>01</span><b>Profile</b></li>
+        <li className="complete"><span>02</span><b>Teach</b></li>
+        <li className="complete"><span>03</span><b>Learn</b></li>
+        <li className="current"><span>04</span><b>Matches</b></li>
+      </ol>
 
       <div className="feed">
         <aside className="side">
           <div className="panel">
             <div className="me-head">
               <div className="me-avatar">{profile.name[0]}</div>
-              <div>
-                <div className="me-name">{profile.name}</div>
+              <div className="me-details">
+                <div className="me-name-row">
+                  <div className="me-name">{profile.name}</div>
+                  <button className="edit-skill" onClick={onEditProfile}>Edit</button>
+                </div>
+                <div className="me-sub">@{profile.username}</div>
                 <div className="me-sub">{profile.major}</div>
               </div>
             </div>
 
             <div className="me-group">
-              <span className="label">You offer</span>
-              <SkillGroup label="Skills you can teach" skills={skills} selected={profile.offers} tone="offer"
-                onToggle={(skill) => updateSkills("offers", skill)} onAddSkill={addSkill} />
-            </div>
-
-            <div className="me-group">
-              <span className="label">You want</span>
-              <SkillGroup label="Skills you want to learn" skills={skills} selected={profile.wants} tone="want"
-                onToggle={(skill) => updateSkills("wants", skill)} onAddSkill={addSkill} />
-            </div>
-
-            <div className="me-group">
-              <span className="label">Availability</span>
-              <div className="chips">
-                {profile.availability.map((t) => <span key={t} className="chip">{t}</span>)}
+              <div className="me-group-head">
+                <span className="label">You offer</span>
+                <button className="edit-skill" onClick={onEditOffers}>Edit</button>
               </div>
+              <SkillGroup label="Skills you can teach" skills={skills} selected={profile.offers} tone="offer"
+                onToggle={(skill) => saveProfile({ ...profile, offers: toggle(profile.offers, skill) })} onAddSkill={addSkill} />
             </div>
+
+            <div className="me-group">
+              <div className="me-group-head">
+                <span className="label">You want</span>
+                <button className="edit-skill" onClick={onEditWants}>Edit</button>
+              </div>
+              <SkillGroup label="Skills you want to learn" skills={skills} selected={profile.wants} tone="want"
+                onToggle={(skill) => saveProfile({ ...profile, wants: toggle(profile.wants, skill) })} onAddSkill={addSkill} />
+            </div>
+            {profileError && <p className="auth-error" role="alert">{profileError}</p>}
           </div>
 
           <div className="stats">
@@ -135,8 +174,15 @@ export default function Feed({ profile, onHome, onProfileChange }) {
             <h1 className="display">
               Your <span className="mark">matches</span>
             </h1>
-            <p>Students whose skills line up with yours. Swap what you know for what you want to learn.</p>
+            <p>Students whose skills line up with yours. Edit either skill list to refresh your matches.</p>
           </div>
+
+          <div className="feed-actions">
+            <span className="label">{matches.length} registered matches</span>
+            <button className="btn ghost" onClick={onShowChats}>Open chats</button>
+          </div>
+          {chatError && <div className="panel empty" role="alert">{chatError}</div>}
+          {loadError && <div className="panel empty" role="alert">{loadError}</div>}
 
           <div className="seg">
             {FILTERS.map(([key, name]) => (
@@ -146,15 +192,14 @@ export default function Feed({ profile, onHome, onProfileChange }) {
             ))}
           </div>
 
-          {shown.length === 0 && <div className="panel empty">No matches here yet. Try different skills.</div>}
-          {shown.map((m, i) => (
+          {!loadError && shown.length === 0 && <div className="panel empty">No registered students match these skills yet.</div>}
+          {shown.map((match, index) => (
             <MatchCard
-              key={m.user.id}
-              match={m}
-              index={i}
+              key={match.user.id}
+              match={match}
+              index={index}
+              onMessage={() => openChat(match.user.id)}
               onPropose={planMeetup}
-              chatOpen={activeChat === m.user.id}
-              onToggleChat={(id) => setActiveChat((current) => current === id ? null : id)}
             />
           ))}
 
@@ -175,6 +220,7 @@ export default function Feed({ profile, onHome, onProfileChange }) {
                   <span>{getSpotRating(recommendation, reviews).rating.toFixed(1)} rating · {getSpotRating(recommendation, reviews).reviews} reviews · near your shared midpoint</span>
                 </div>
                 <button className="btn ghost" type="button" onClick={() => setSelectedSpotId(recommendation.id)}>Show on map</button>
+                <button className="btn" type="button" onClick={() => openChat(activePartner.id)}>Continue in chat</button>
               </div>
             )}
             {activePartner && !recommendation && (
@@ -189,7 +235,7 @@ export default function Feed({ profile, onHome, onProfileChange }) {
                 userLocation={profile.location}
                 peerLocation={activePartner?.location}
                 peerName={activePartner?.name}
-                onUserLocation={(location) => onProfileChange({ ...profile, location })}
+                onUserLocation={(location) => saveProfile({ ...profile, location })}
               />
               <div className="spot-details">
                 <div className="spot-list" aria-label="Rated study spots">

@@ -1,8 +1,7 @@
 import "./MatchCard.css";
-import MatchChat from "./MatchChat";
 
-export default function MatchCard({ match, onPropose, onToggleChat, chatOpen, index = 0 }) {
-  const { user, type, theyTeachMe, iTeachThem, timeOverlap } = match;
+export default function MatchCard({ match, onMessage, onPropose, index = 0 }) {
+  const { user, type, theyTeachMe, iTeachThem } = match;
   const perfect = type === "perfect";
   const hue = 170 + ((user.name.charCodeAt(0) * 7) % 50);
 
@@ -37,17 +36,13 @@ export default function MatchCard({ match, onPropose, onToggleChat, chatOpen, in
       </div>
 
       <div className="match-footer">
-        <span className="free">
-          {timeOverlap.length > 0 ? `Both free: ${timeOverlap.join(", ")}` : "No shared times yet"}
-        </span>
         <div className="match-actions">
-          <button className="btn ghost" type="button" onClick={() => onToggleChat(user.id)} aria-expanded={chatOpen}>
-            {chatOpen ? "Close chat" : `Chat with ${user.name}`}
+          <button className="btn ghost" type="button" onClick={onMessage}>
+            Chat with {user.name}
           </button>
-          <button className="btn" onClick={() => onPropose(match)}>Plan meetup</button>
+          <button className="btn" type="button" onClick={() => onPropose(match)}>Find a meetup spot</button>
         </div>
       </div>
-      {chatOpen && <MatchChat user={user} />}
     </article>
   );
 }
