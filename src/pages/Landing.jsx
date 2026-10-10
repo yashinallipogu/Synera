@@ -1,6 +1,9 @@
+import { useMemo, useState } from "react";
 import Nav from "../components/Nav";
+import SkillGroup from "../components/SkillGroup";
 import { SKILLS } from "../data/skills";
 import users from "../data/users.json";
+import { getMatches } from "../lib/match";
 import "./Landing.css";
 
 const STEPS = [
@@ -9,9 +12,24 @@ const STEPS = [
   { n: "03", t: "Meet and swap", d: "Pick a time and a public campus spot. Both of you leave with something new." },
 ];
 
+const toggle = (list, skill) => list.includes(skill) ? list.filter((item) => item !== skill) : [...list, skill];
+
 export default function Landing({ onEnter, onLogin }) {
-  const scrollToSteps = () =>
-    document.getElementById("how-it-works").scrollIntoView({ behavior: "smooth" });
+  const [offers, setOffers] = useState(["Python"]);
+  const [wants, setWants] = useState(["Figma"]);
+  const [customSkills, setCustomSkills] = useState([]);
+  const skills = [...SKILLS, ...customSkills];
+  const enterWithSkills = () => onEnter({ offers, wants, customSkills });
+  const addSkill = (skill) => setCustomSkills((current) => [...current, skill]);
+
+  const matches = useMemo(
+    () => getMatches({ id: "preview", offers, wants }, users),
+    [offers, wants]
+  );
+  const perfect = matches.filter((match) => match.type === "perfect").length;
+
+  const scrollToMatcher = () =>
+    document.getElementById("matcher").scrollIntoView({ behavior: "smooth", block: "center" });
 
   return (
     <div className="container">
@@ -20,6 +38,10 @@ export default function Landing({ onEnter, onLogin }) {
       {/* Hero */}
       <section className="hero">
         <div className="hero-copy">
+          <div className="window-titlebar" aria-hidden="true">
+            <span>dialog Window</span>
+            <span className="window-close">×</span>
+          </div>
           <span className="eyebrow rise" style={{ "--d": "0ms" }}>Campus skill exchange</span>
           <h1 className="display hero-title rise" style={{ "--d": "80ms" }}>
             Trade what you <span className="grad-text">know</span> for what you{" "}
@@ -30,8 +52,8 @@ export default function Landing({ onEnter, onLogin }) {
             statistics. Every swap builds a reputation that comes from real collaboration, not likes.
           </p>
           <div className="hero-cta rise" style={{ "--d": "240ms" }}>
-            <button className="btn lg" onClick={onEnter}>Create an account</button>
-            <button className="btn lg ghost" onClick={scrollToSteps}>How it works</button>
+            <button className="btn lg" onClick={scrollToMatcher}>Try the matcher</button>
+            <button className="btn lg ghost" onClick={enterWithSkills}>Browse matches</button>
           </div>
           <div className="hero-stats rise" style={{ "--d": "320ms" }}>
             <div><b className="grad-text">{users.length}</b><span>students</span></div>
@@ -46,12 +68,46 @@ export default function Landing({ onEnter, onLogin }) {
               <span className="label">Your next steps</span>
               <span className="live"><i /> Takes less than a minute</span>
             </div>
-            <ol className="journey-steps">
-              <li><span>01</span><div><b>What can you teach?</b><small>Pick skills you feel confident sharing.</small></div></li>
-              <li><span>02</span><div><b>What do you want to learn?</b><small>Choose what would help you grow.</small></div></li>
-              <li><span>03</span><div><b>Meet your matches</b><small>Find students for a skill swap.</small></div></li>
-            </ol>
-            <button className="btn lg full" onClick={onEnter}>Create an account →</button>
+            <SkillGroup
+              label="I can teach"
+              skills={skills}
+              selected={offers}
+              tone="offer"
+              onToggle={(skill) => setOffers(toggle(offers, skill))}
+              onAddSkill={addSkill}
+            />
+
+            <SkillGroup
+              label="I want to learn"
+              skills={skills}
+              selected={wants}
+              tone="want"
+              onToggle={(skill) => setWants(toggle(wants, skill))}
+              onAddSkill={addSkill}
+            />
+
+            <div className="results">
+              {matches.length === 0 && (
+                <p className="results-empty">Pick a few skills to see who you could swap with.</p>
+              )}
+              {matches.slice(0, 3).map((m) => (
+                <div className="mini" key={m.user.id}>
+                  <div className="mini-av">{m.user.name[0]}</div>
+                  <div className="mini-info">
+                    <b>{m.user.name}</b>
+                    <span>Teaches {m.theyTeachMe.join(", ")}</span>
+                  </div>
+                  <span className={"badge " + (m.type === "perfect" ? "perfect" : "helps")}>
+                    {m.type === "perfect" ? "Perfect swap" : "Can help"}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <button className="btn lg full" disabled={matches.length === 0}
+              onClick={enterWithSkills}>
+              See all {matches.length} matches {perfect > 0 ? "(" + perfect + " perfect)" : ""} →
+            </button>
           </div>
         </div>
       </section>
@@ -59,7 +115,7 @@ export default function Landing({ onEnter, onLogin }) {
       {/* Marquee */}
       <div className="marquee">
         <div className="marquee-track">
-          {[...SKILLS, ...SKILLS].map((s, i) => (
+          {[...skills, ...skills].map((s, i) => (
             <span key={i} className="marquee-item">{s}</span>
           ))}
         </div>
@@ -91,7 +147,7 @@ export default function Landing({ onEnter, onLogin }) {
             <span className="badge perfect">Live now</span>
             <h3>SkillSwap</h3>
             <p>Trade skills one-to-one. Perfect swaps ranked first, with reputation built from completed sessions.</p>
-            <button className="btn" onClick={() => onEnter()}>Open SkillSwap →</button>
+            <button className="btn" onClick={enterWithSkills}>Open SkillSwap →</button>
           </div>
           <div className="panel cat dim">
             <span className="badge helps">Coming soon</span>
@@ -109,7 +165,7 @@ export default function Landing({ onEnter, onLogin }) {
       {/* Final CTA */}
       <section className="cta">
         <h2 className="display">Everyone is good at something.<br />Go find who needs it.</h2>
-        <button className="btn lg ghost" onClick={() => onEnter()}>Open Synera →</button>
+        <button className="btn lg ghost" onClick={enterWithSkills}>Open Synera →</button>
       </section>
 
       <footer className="foot">Synera · Built at the hackathon</footer>

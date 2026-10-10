@@ -11,7 +11,7 @@ const scrypt = promisify(scryptCallback);
 const SESSION_COOKIE = "synera_session";
 const SESSION_TTL = 7 * 24 * 60 * 60 * 1000;
 const PASSWORD_BYTES = 64;
-const PROFILE_FIELDS = ["name", "major", "offers", "wants", "phone", "textOptIn"];
+const PROFILE_FIELDS = ["name", "major", "offers", "wants", "phone", "textOptIn", "customSkills", "location"];
 
 function readCookies(header = "") {
   return Object.fromEntries(header.split(";").map((part) => {
@@ -29,7 +29,7 @@ function normalizeProfile(value) {
 
   const profile = {};
   for (const field of PROFILE_FIELDS) {
-    if (field === "offers" || field === "wants") {
+    if (field === "offers" || field === "wants" || field === "customSkills") {
       const items = value[field] ?? [];
       if (!Array.isArray(items) || items.length > 40 || items.some((item) => typeof item !== "string" || item.length > 80)) {
         throw Object.assign(new Error("Profile choices are invalid."), { status: 400 });
@@ -40,6 +40,19 @@ function normalizeProfile(value) {
         throw Object.assign(new Error("Text reminder consent must be a yes or no choice."), { status: 400 });
       }
       profile[field] = value[field];
+    } else if (field === "location") {
+      const location = value[field] ?? null;
+      if (location === null) {
+        profile[field] = null;
+      } else if (
+        typeof location !== "object" || Array.isArray(location)
+        || !Number.isFinite(location.lat) || !Number.isFinite(location.lng)
+        || Math.abs(location.lat) > 90 || Math.abs(location.lng) > 180
+      ) {
+        throw Object.assign(new Error("Map location is invalid."), { status: 400 });
+      } else {
+        profile[field] = { lat: location.lat, lng: location.lng };
+      }
     } else {
       const text = value[field] ?? "";
       if (typeof text !== "string" || text.length > 100) {
@@ -195,6 +208,7 @@ export function createAuthHandler() {
         major: profile.major,
         offers: profile.offers,
         wants: profile.wants,
+        location: profile.location || null,
         swaps: 0,
       };
     })

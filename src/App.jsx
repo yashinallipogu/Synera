@@ -13,6 +13,8 @@ const emptyProfile = () => ({
   major: "",
   offers: [],
   wants: [],
+  customSkills: [],
+  location: null,
   phone: "",
   textOptIn: false,
   phoneVerified: false,
@@ -41,6 +43,7 @@ export default function App() {
   const [authChecked, setAuthChecked] = useState(false);
   const [profile, setProfile] = useState(emptyProfile);
   const [activeChatId, setActiveChatId] = useState(null);
+  const [entryProfile, setEntryProfile] = useState(null);
 
   const navigate = (nextView) => {
     setView(nextView);
@@ -49,11 +52,13 @@ export default function App() {
 
   const signupSteps = ["profile", "offers", "wants"];
   const stepIndex = signupSteps.indexOf(view);
-  const enter = () => {
+  const enter = (initialProfile = null) => {
+    setEntryProfile(initialProfile);
     setAuthMode("register");
     navigate("auth");
   };
   const login = () => {
+    setEntryProfile(null);
     setAuthMode("login");
     navigate("auth");
   };
@@ -69,11 +74,35 @@ export default function App() {
     setActiveChatId(result.chat.id);
     navigate("chat");
   };
-  const updateProfile = (field, value) =>
-    setProfile((current) => ({ ...current, [field]: value }));
-  const authenticated = (user) => {
+  const updateProfile = (field, value) => setProfile((current) =>
+    typeof field === "string" ? { ...current, [field]: value } : field
+  );
+  const saveInlineProfile = async (nextProfile) => {
+    setProfile(nextProfile);
+    const response = await fetch("/api/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nextProfile),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Unable to save your profile.");
+    setProfile((current) => ({ ...current, ...result.user.profile }));
+  };
+  const authenticated = async (user) => {
+    let nextProfile = profileFromUser(user);
+    if (!profileIsComplete(nextProfile) && authMode === "register" && entryProfile) {
+      nextProfile = { ...nextProfile, ...entryProfile };
+      const response = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nextProfile),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to save your selected skills.");
+      nextProfile = { ...nextProfile, ...result.user.profile };
+    }
     setAuthUser(user);
-    const nextProfile = profileFromUser(user);
+    setEntryProfile(null);
     setProfile(nextProfile);
     navigate(profileIsComplete(nextProfile) ? "matches" : "profile");
   };
@@ -151,11 +180,12 @@ export default function App() {
           onLogout={logout}
           onOpenChat={setActiveChatId}
         />
-      ) : (
+            ) : (
         <Feed
           profile={profile}
           onHome={home}
           onLogout={logout}
+          onProfileChange={saveInlineProfile}
           onEditProfile={() => navigate("profile")}
           onEditOffers={() => navigate("offers")}
           onEditWants={() => navigate("wants")}

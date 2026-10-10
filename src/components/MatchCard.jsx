@@ -1,6 +1,6 @@
 import "./MatchCard.css";
 
-export default function MatchCard({ match, onMessage, index = 0 }) {
+export default function MatchCard({ match, onMessage, onPropose, index = 0 }) {
   const { user, type, theyTeachMe, iTeachThem } = match;
   const perfect = type === "perfect";
   const hue = 170 + ((user.name.charCodeAt(0) * 7) % 50);
@@ -36,7 +36,12 @@ export default function MatchCard({ match, onMessage, index = 0 }) {
       </div>
 
       <div className="match-footer">
-        <button className="btn" onClick={onMessage}>Message</button>
+        <div className="match-actions">
+          <button className="btn ghost" type="button" onClick={onMessage}>
+            Chat with {user.name}
+          </button>
+          <button className="btn" type="button" onClick={() => onPropose(match)}>Find a meetup spot</button>
+        </div>
       </div>
     </article>
   );
