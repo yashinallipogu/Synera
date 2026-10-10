@@ -6,6 +6,7 @@ import SkillSetup from "./pages/SkillSetup";
 import Feed from "./pages/Feed";
 import Chat from "./pages/Chat";
 import { ME } from "./data/me";
+import { readApiJson } from "./lib/api";
 
 const emptyProfile = () => ({
   ...ME,
@@ -53,7 +54,12 @@ export default function App() {
   const signupSteps = ["profile", "offers", "wants"];
   const stepIndex = signupSteps.indexOf(view);
   const enter = (initialProfile = null) => {
-    setEntryProfile(initialProfile);
+    const selectedProfile = initialProfile
+      && Array.isArray(initialProfile.offers)
+      && Array.isArray(initialProfile.wants)
+      ? initialProfile
+      : null;
+    setEntryProfile(selectedProfile);
     setAuthMode("register");
     navigate("auth");
   };
@@ -69,7 +75,7 @@ export default function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
     });
-    const result = await response.json();
+    const result = await readApiJson(response);
     if (!response.ok) throw new Error(result.error || "Unable to open chat.");
     setActiveChatId(result.chat.id);
     navigate("chat");
@@ -84,7 +90,7 @@ export default function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nextProfile),
     });
-    const result = await response.json();
+    const result = await readApiJson(response);
     if (!response.ok) throw new Error(result.error || "Unable to save your profile.");
     setProfile((current) => ({ ...current, ...result.user.profile }));
   };
@@ -97,7 +103,7 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nextProfile),
       });
-      const result = await response.json();
+      const result = await readApiJson(response);
       if (!response.ok) throw new Error(result.error || "Unable to save your selected skills.");
       nextProfile = { ...nextProfile, ...result.user.profile };
     }
@@ -112,7 +118,7 @@ export default function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(profile),
     });
-    const result = await response.json();
+    const result = await readApiJson(response);
     if (!response.ok) throw new Error(result.error || "Unable to save your profile.");
     setProfile((current) => ({ ...current, ...result.user.profile }));
     navigate(signupSteps[stepIndex + 1] ?? "matches");
@@ -132,7 +138,7 @@ export default function App() {
     fetch("/api/auth/me")
       .then(async (response) => {
         if (!response.ok) return;
-        const result = await response.json();
+        const result = await readApiJson(response);
         if (!active || !result.user) return;
         const nextProfile = profileFromUser(result.user);
         setAuthUser(result.user);

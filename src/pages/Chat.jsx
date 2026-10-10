@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import Nav from "../components/Nav";
+import { readApiJson } from "../lib/api";
 import "./Chat.css";
 
 async function requestJson(url, options) {
   const response = await fetch(url, options);
-  const result = await response.json();
+  const result = await readApiJson(response);
   if (!response.ok) throw new Error(result.error || "The request could not be completed.");
   return result;
 }

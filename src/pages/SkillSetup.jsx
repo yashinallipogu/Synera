@@ -7,6 +7,7 @@ import {
 } from "libphonenumber-js";
 import Nav from "../components/Nav";
 import { SKILLS } from "../data/skills";
+import { readApiJson } from "../lib/api";
 import "./SkillSetup.css";
 
 const STEPS = [
@@ -98,7 +99,7 @@ export default function SkillSetup({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: profile.phone }),
       });
-      const result = await response.json();
+      const result = await readApiJson(response);
       if (!response.ok) throw new Error(result.error || "Could not send a code.");
       setPhoneCodeSent(true);
       setPhoneStatus("Code sent. Check your iMessages.");
@@ -117,7 +118,7 @@ export default function SkillSetup({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: phoneCode }),
       });
-      const result = await response.json();
+      const result = await readApiJson(response);
       if (!response.ok) throw new Error(result.error || "Could not verify this number.");
       onProfileChange("phoneVerified", true);
       setPhoneStatus("Phone number verified.");

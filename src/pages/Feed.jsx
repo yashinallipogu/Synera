@@ -5,6 +5,7 @@ import MatchCard from "../components/MatchCard";
 import StudySpotMap from "../components/StudySpotMap";
 import { SKILLS } from "../data/skills";
 import { getSpotRating, loadSpotReviews, saveSpotReviews, STUDY_SPOTS } from "../data/studySpots";
+import { readApiJson } from "../lib/api";
 import "../styles/FeedFeatures.css";
 
 const FILTERS = [
@@ -59,7 +60,7 @@ export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditO
     let active = true;
     fetch("/api/matches")
       .then(async (response) => {
-        const result = await response.json();
+        const result = await readApiJson(response);
         if (!response.ok) throw new Error(result.error || "Unable to load matches.");
         if (active) setMatches(result.matches);
       })

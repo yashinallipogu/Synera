@@ -20,7 +20,7 @@ export default function Nav({ onHome, onEnter, onLogin, onLogout, inApp }) {
       ) : (
         <div className="nav-actions">
           <button className="nav-text-action" onClick={onLogin}>Log in</button>
-          <button className="btn" onClick={onEnter}>Create account</button>
+          <button className="btn" onClick={() => onEnter()}>Create account</button>
         </div>
       )}
     </header>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Nav from "../components/Nav";
+import { readApiJson } from "../lib/api";
 import "./Auth.css";
 
 export default function Auth({ mode, onModeChange, onHome, onSuccess }) {
@@ -20,7 +21,7 @@ export default function Auth({ mode, onModeChange, onHome, onSuccess }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-      const result = await response.json();
+      const result = await readApiJson(response);
       if (!response.ok) throw new Error(result.error || "Unable to sign in.");
       await onSuccess(result.user);
     } catch (submitError) {
