@@ -42,6 +42,15 @@ Our AI helper uses Google Gemini to create flashcards, icebreakers, and mini-les
 Hosting: Vercel
 We use Vercel to host our app and handle our API requests. Since our demo uses temporary storage, a full production version would need a permanent database.
 
+## How To Run The Project
+
+Sign up with a username and password, or with Google.
+Build your profile with the skills you can offer and the ones you want to learn.
+Browse matches from registered accounts, ranked by how well their skills complement yours.
+Start a chat with a match (chat is match-only).
+Propose a meetup at a location from the map; the other participant accepts or declines.
+Swap skills in person, using the AI helper for flashcards, icebreakers, and mini-lessons.
+
 ## Challenges We Faced
 - One of our biggest challenges was setting up user authentication and figuring out how to manage user accounts securely. We had to work through password protection, Google login, and making sure users could sign up and log in properly. Getting all these features to work together took time and troubleshooting.
 
@@ -59,11 +68,3 @@ Our next plans for Synera are expanding our Study Buddy and Hobby Helper feature
 
 - Hobby Help: Matches you to someone who you can try or help with a new hobby or activity with. Through this you can find people who have the same interests as you do.
 
-## How To Run The Project
-
-Sign up with a username and password, or with Google.
-Build your profile with the skills you can offer and the ones you want to learn.
-Browse matches from registered accounts, ranked by how well their skills complement yours.
-Start a chat with a match (chat is match-only).
-Propose a meetup at a location from the map; the other participant accepts or declines.
-Swap skills in person, using the AI helper for flashcards, icebreakers, and mini-lessons.
