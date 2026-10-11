@@ -9,6 +9,9 @@ import { createAuthHandler } from "./server/auth.js";
 const root = path.dirname(fileURLToPath(import.meta.url));
 const production = process.env.NODE_ENV === "production" || process.argv.includes("--production");
 if (production) process.env.NODE_ENV = "production";
+if (process.env.VERCEL && !process.env.SYNERA_DATA_DIR) {
+  process.env.SYNERA_DATA_DIR = "/tmp/synera";
+}
 const photonEnvPaths = [
   process.env.SYNERA_PHOTON_ENV_FILE,
   path.join(root, "synera-photon", ".env"),

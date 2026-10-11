@@ -25,7 +25,7 @@ For a production build, run `npm.cmd run build` followed by `npm.cmd run preview
 
 ## Vercel
 
-Vercel serves the Vite build and routes `/api/*` requests through the serverless handler in `api/[...path].js`. The current account database is SQLite in `/tmp`, which is temporary serverless storage; accounts and sessions may reset when Vercel recycles a function. Configure a persistent hosted database before using Vercel for real accounts.
+Vercel runs the root `server.js` as a Node server function and includes the Vite build output. The account database uses SQLite in `/tmp`, which is temporary serverless storage; accounts and sessions may reset when Vercel recycles the function. Configure a persistent hosted database before using Vercel for real accounts.
 
 ## Photon messaging
 
