@@ -12,6 +12,8 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
   const selectRef = useRef(onSelectSpot);
   const locationCallbackRef = useRef(onUserLocation);
   const [locationStatus, setLocationStatus] = useState("");
+  const userLatitude = userLocation?.lat ?? null;
+  const userLongitude = userLocation?.lng ?? null;
 
   useEffect(() => {
     selectRef.current = onSelectSpot;
@@ -20,8 +22,8 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
 
   useEffect(() => {
     // Determine initial center: use userLocation if available, otherwise default to a general fallback (e.g., North Carolina center)
-    const initialCenter = userLocation 
-      ? [userLocation.lat, userLocation.lng] 
+    const initialCenter = userLatitude !== null && userLongitude !== null
+      ? [userLatitude, userLongitude]
       : [35.9132, -79.0558]; // Fallback to Chapel Hill, NC coordinates
 
     const map = L.map(mapElement.current, { scrollWheelZoom: true }).setView(initialCenter, 15);
@@ -38,16 +40,21 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
     map.whenReady(() => requestAnimationFrame(() => requestAnimationFrame(() => map.invalidateSize())));
 
     // Automatically try to grab user location on mount if not already provided
-    if (!userLocation && navigator.geolocation) {
+    if (userLatitude === null && userLongitude === null && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async ({ coords }) => {
           const location = { lat: coords.latitude, lng: coords.longitude };
           map.setView([location.lat, location.lng], 15);
           try {
             await locationCallbackRef.current?.(location);
-          } catch {}
+            setLocationStatus("");
+          } catch {
+            setLocationStatus("Your location was found but could not be saved to your profile.");
+          }
         },
-        () => {} // Silent catch if user hasn't granted permission yet
+        (error) => setLocationStatus(error.code === error.PERMISSION_DENIED
+          ? "Location permission was denied."
+          : "Could not determine your location.")
       );
     }
 
@@ -56,7 +63,7 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [userLatitude, userLongitude]);
 
   useEffect(() => {
     const map = mapRef.current;

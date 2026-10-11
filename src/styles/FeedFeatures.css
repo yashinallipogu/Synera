@@ -1,0 +1,129 @@
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skill-editor { display: grid; gap: 9px; }
+.skill-editor > .pick-title { font-size: .92rem; }
+.skill-editor .chips { max-height: 180px; overflow: auto; padding: 1px; }
+.skill-editor .pick { border-radius: 3px; }
+.skill-add, .chat-compose { display: flex; gap: 7px; }
+.skill-add input, .chat-compose input, .spot-review-form textarea {
+  min-width: 0;
+  flex: 1;
+  padding: 9px 10px;
+  border: 1px solid rgba(60,130,184,.42);
+  border-radius: 2px;
+  color: var(--text);
+  background: rgba(255,255,255,.72);
+  font: inherit;
+}
+.skill-add input { width: 100%; }
+.skill-add .btn, .chat-compose .btn { padding: 8px 12px; }
+.skill-add .btn:disabled, .chat-compose .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.spots-section {
+  scroll-margin-top: 72px;
+  margin-top: 36px;
+  padding: 24px;
+  border: 2px solid rgba(255,255,255,.72);
+  background: linear-gradient(180deg, rgba(255,255,255,.46), rgba(228,245,255,.24));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 12px 22px rgba(40,100,150,.12);
+}
+.spots-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.spots-heading h2 { margin-top: 6px; font-size: 1.8rem; }
+.spots-heading p { margin-top: 6px; color: var(--text-soft); font-size: .9rem; }
+.demo-note, .chat-demo-tag {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid rgba(72,129,176,.35);
+  background: rgba(255,255,255,.46);
+  color: #486c87;
+  font-size: .63rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+.meetup-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid rgba(63,138,177,.28);
+  background: linear-gradient(100deg, rgba(227,255,235,.85), rgba(255,255,255,.55));
+}
+.suggestion-icon { color: #368753; font-size: 1.5rem; }
+.meetup-suggestion > div { display: grid; flex: 1; gap: 3px; min-width: 0; }
+.meetup-suggestion b { color: #225d75; font-size: .9rem; }
+.meetup-suggestion span:not(.suggestion-icon) { color: var(--text-soft); font-size: .78rem; }
+.meetup-suggestion .btn { flex: 0 0 auto; padding: 8px 10px; }
+.spots-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr); gap: 14px; align-items: stretch; }
+.study-map-frame { position: relative; min-width: 0; min-height: 430px; overflow: hidden; border: 2px solid #fff; box-shadow: inset 0 0 0 1px rgba(36,96,139,.28), 0 5px 12px rgba(36,96,139,.12); }
+.study-map { position: absolute; inset: 0; z-index: 1; height: 100%; min-height: 430px; background: #c4e5e9; }
+.study-map .leaflet-tile-pane { filter: saturate(.86); }
+.study-map .leaflet-control-attribution { font-size: 9px; }
+.map-locate { position: absolute; z-index: 500; top: 12px; right: 12px; padding: 8px 10px; font-size: .78rem; }
+.map-status { position: absolute; z-index: 500; bottom: 12px; left: 12px; max-width: calc(100% - 24px); padding: 6px 9px; background: rgba(255,255,255,.9); color: #365d7c; font-size: .73rem; }
+.spot-details { display: grid; grid-template-rows: auto 1fr; min-width: 0; border: 1px solid rgba(60,130,184,.3); background: rgba(255,255,255,.34); }
+.spot-list { max-height: 215px; overflow: auto; border-bottom: 1px solid rgba(60,130,184,.28); }
+.spot-option { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; padding: 10px 11px; border: 0; border-bottom: 1px solid rgba(60,130,184,.17); background: transparent; color: var(--text); text-align: left; cursor: pointer; }
+.spot-option:hover, .spot-option.selected { background: rgba(132,209,245,.28); }
+.spot-option span { display: grid; gap: 2px; min-width: 0; }
+.spot-option b { overflow: hidden; font-size: .82rem; text-overflow: ellipsis; white-space: nowrap; }
+.spot-option small { color: var(--text-soft); font-size: .72rem; }
+.spot-option strong { flex: 0 0 auto; color: #4c853b; font-size: .82rem; }
+.spot-selected { padding: 14px; }
+.spot-type { color: var(--text-dim); font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.spot-selected h3 { margin-top: 4px; font-size: 1.08rem; }
+.spot-rating { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
+.spot-rating b { color: #568b2d; font-size: 1.05rem; }
+.spot-rating span { color: var(--text-soft); font-size: .78rem; }
+.spot-selected > p { margin: 8px 0 12px; color: var(--text-soft); font-size: .82rem; line-height: 1.45; }
+.spot-selected > .btn { padding: 8px 10px; font-size: .8rem; }
+.spot-review-form { display: grid; gap: 9px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(60,130,184,.25); }
+.rating-picker { display: flex; gap: 3px; }
+.rating-picker button { padding: 0 2px; border: 0; background: transparent; color: #8fa6b5; font-size: 1.65rem; cursor: pointer; }
+.rating-picker button.active { color: #e8a51e; text-shadow: 0 1px 0 #fff; }
+.spot-review-form textarea { width: 100%; resize: vertical; font-size: .82rem; }
+.spot-review-form .btn { justify-self: start; padding: 8px 12px; }
+.spot-review-list { display: grid; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(60,130,184,.25); }
+.spot-review { padding: 8px 9px; border: 1px solid rgba(60,130,184,.2); background: rgba(255,255,255,.44); }
+.spot-review b { color: #e8a51e; font-size: .82rem; }
+.spot-review b span { color: #9aabb5; }
+.spot-review p { margin-top: 4px; color: var(--text-soft); font-size: .8rem; line-height: 1.4; }
+.spot-review time { display: block; margin-top: 5px; color: var(--text-dim); font-size: .68rem; }
+.no-nearby-spots { margin-bottom: 14px; padding: 10px 12px; border: 1px solid rgba(191,125,50,.3); background: rgba(255,245,222,.76); color: #74592c; font-size: .83rem; }
+.map-disclaimer { margin-top: 9px; color: var(--text-dim); font-size: .72rem; line-height: 1.4; }
+
+.match-chat { display: grid; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.chat-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+.chat-head h4 { font-size: .95rem; }
+.chat-head p, .chat-notice { margin-top: 4px; color: var(--text-dim); font-size: .73rem; line-height: 1.4; }
+.chat-messages { display: grid; align-content: start; gap: 7px; min-height: 62px; max-height: 220px; overflow-y: auto; padding: 9px; border: 1px solid rgba(60,130,184,.24); background: rgba(238,249,255,.58); }
+.chat-empty { align-self: center; color: var(--text-soft); font-size: .82rem; }
+.chat-message { display: flex; justify-content: space-between; align-items: end; gap: 12px; justify-self: end; max-width: 88%; padding: 8px 10px; border: 1px solid rgba(60,130,184,.24); background: linear-gradient(180deg, #fff, #d9f1ff); color: #24567d; font-size: .84rem; overflow-wrap: anywhere; }
+.chat-message time { flex: 0 0 auto; color: var(--text-dim); font-size: .65rem; }
+.chat-notice { margin: 0; }
+
+@media (max-width: 900px) {
+  .spots-layout { grid-template-columns: 1fr; }
+  .study-map-frame, .study-map { min-height: 360px; }
+  .side .panel { max-height: none; }
+}
+@media (max-width: 600px) {
+  .spots-section { margin-inline: -8px; padding: 14px; }
+  .spots-heading { align-items: start; flex-direction: column; }
+  .spots-heading h2 { font-size: 1.5rem; }
+  .meetup-suggestion { align-items: start; flex-wrap: wrap; }
+  .meetup-suggestion .btn { margin-left: 32px; }
+  .study-map-frame, .study-map { min-height: 300px; }
+  .spot-list { max-height: 185px; }
+  .chat-head { flex-direction: column; }
+}
