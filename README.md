@@ -11,7 +11,7 @@ npm.cmd install
 npm.cmd run dev
 ```
 
-Open http://127.0.0.1:5173. The dev command runs the app and its account API together.
+Open http://localhost:3000. The dev command runs the app and its account API together.
 
 ## Accounts
 
