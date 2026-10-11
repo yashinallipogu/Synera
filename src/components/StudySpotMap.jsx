@@ -19,15 +19,37 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
   }, [onSelectSpot, onUserLocation]);
 
   useEffect(() => {
-    const map = L.map(mapElement.current, { scrollWheelZoom: true }).setView([42.275, -83.740], 16);
+    // Determine initial center: use userLocation if available, otherwise default to a general fallback (e.g., North Carolina center)
+    const initialCenter = userLocation 
+      ? [userLocation.lat, userLocation.lng] 
+      : [35.9132, -79.0558]; // Fallback to Chapel Hill, NC coordinates
+
+    const map = L.map(mapElement.current, { scrollWheelZoom: true }).setView(initialCenter, 15);
+    
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
+    
     mapRef.current = map;
+    
     const resizeObserver = new ResizeObserver(() => map.invalidateSize());
     resizeObserver.observe(mapElement.current);
     map.whenReady(() => requestAnimationFrame(() => requestAnimationFrame(() => map.invalidateSize())));
+
+    // Automatically try to grab user location on mount if not already provided
+    if (!userLocation && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async ({ coords }) => {
+          const location = { lat: coords.latitude, lng: coords.longitude };
+          map.setView([location.lat, location.lng], 15);
+          try {
+            await locationCallbackRef.current?.(location);
+          } catch {}
+        },
+        () => {} // Silent catch if user hasn't granted permission yet
+      );
+    }
 
     return () => {
       resizeObserver.disconnect();
@@ -44,7 +66,7 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
     const markers = L.layerGroup().addTo(map);
     spots.forEach((spot) => {
       const { rating } = getSpotRating(spot, reviews);
-      const color = rating >= 4.5 ? "#188653" : rating >= 4 ? "#c27b0a" : "#bd4941";
+      const color = rating === null ? "#607d8b" : rating >= 4.5 ? "#188653" : rating >= 4 ? "#c27b0a" : "#bd4941";
       const marker = L.circleMarker([spot.lat, spot.lng], {
         radius: selectedSpotId === spot.id ? 13 : 10,
         color: "#fff",
@@ -52,7 +74,7 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
         fillColor: color,
         fillOpacity: 0.96,
       });
-      marker.bindTooltip(`${rating.toFixed(1)} ★ · ${spot.name}`, { direction: "top", offset: [0, -8] });
+      marker.bindTooltip(`${rating === null ? "No reviews" : `${rating.toFixed(1)} ★`} · ${spot.name}`, { direction: "top", offset: [0, -8] });
       marker.on("click", () => selectRef.current(spot.id));
       markers.addLayer(marker);
     });
@@ -66,6 +88,7 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
 
     locationLayerRef.current?.remove();
     peerLayerRef.current?.remove();
+    
     if (userLocation) {
       locationLayerRef.current = L.circleMarker([userLocation.lat, userLocation.lng], {
         radius: 8,
@@ -74,7 +97,11 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
         fillColor: "#177dcc",
         fillOpacity: 1,
       }).bindTooltip("Your location").addTo(map);
+
+      // Automatically center the map on your location coordinates when found
+      map.setView([userLocation.lat, userLocation.lng], 15);
     }
+
     if (peerLocation) {
       peerLayerRef.current = L.circleMarker([peerLocation.lat, peerLocation.lng], {
         radius: 8,
@@ -83,13 +110,18 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
         fillColor: "#7657bd",
         fillOpacity: 1,
       }).bindTooltip(`${peerName || "Match"} · sample location`).addTo(map);
-      const points = [[peerLocation.lat, peerLocation.lng]];
-      if (userLocation) points.push([userLocation.lat, userLocation.lng]);
-      map.fitBounds(points, { padding: [45, 45], maxZoom: 16 });
-    } else if (userLocation) {
-      map.flyTo([userLocation.lat, userLocation.lng], 16);
     }
-  }, [peerLocation, peerName, userLocation]);
+
+    const points = spots.map((spot) => [spot.lat, spot.lng]);
+    if (userLocation) points.push([userLocation.lat, userLocation.lng]);
+    if (peerLocation && (!userLocation || L.latLng(userLocation).distanceTo(peerLocation) <= 15000)) {
+      points.push([peerLocation.lat, peerLocation.lng]);
+    }
+    
+    if (points.length > 1 && !userLocation) {
+      map.fitBounds(points, { padding: [36, 36], maxZoom: 15 });
+    }
+  }, [peerLocation, peerName, spots, userLocation]);
 
   const showMyLocation = () => {
     if (!navigator.geolocation) {
@@ -98,11 +130,17 @@ export default function StudySpotMap({ spots, reviews, selectedSpotId, onSelectS
     }
 
     navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        locationCallbackRef.current?.({ lat: coords.latitude, lng: coords.longitude });
-        setLocationStatus("Showing your location on this device.");
+      async ({ coords }) => {
+        const location = { lat: coords.latitude, lng: coords.longitude };
+        setLocationStatus("Searching for study spots nearby…");
+        try {
+          await locationCallbackRef.current?.(location);
+          setLocationStatus("Your location and nearby study spots are shown.");
+        } catch {
+          setLocationStatus("Could not load nearby study spots. Check your connection and try again.");
+        }
       },
-      () => setLocationStatus("Location permission was unavailable. The demo campus remains centered."),
+      () => setLocationStatus("Location permission was unavailable."),
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
     );
   };

@@ -31,7 +31,7 @@ Vercel serves the Vite build and rewrites `/api/*` to the shared Node handler in
 
 Synera connects to a separate Spectrum iMessage service using the [stable Spectrum SDK](https://photon.codes/docs/spectrum-ts/getting-started) and [iMessage provider](https://photon.codes/docs/spectrum-ts/providers/imessage). Photon exposes a project-secret-protected send endpoint on localhost port 5190; Synera calls it from its server, never from browser code.
 
-The Photon service lives in the `synera-photon` folder in this repository. Copy `synera-photon/.env.example` to `synera-photon/.env` and fill in `PROJECT_ID` and `PROJECT_SECRET` from your Photon dashboard. Synera loads credentials from this file at startup. Keep `.env` private; it is ignored by Git.
+The Photon service lives in the `synera-photon` folder in this repository. Copy `synera-photon/.env.example` to `synera-photon/.env` and fill in the project ID and secret from your Photon dashboard. Both `PROJECT_ID` / `PROJECT_SECRET` and `SPECTRUM_PROJECT_ID` / `SPECTRUM_PROJECT_SECRET` are accepted. Synera loads credentials from this file at startup. Keep `.env` private; it is ignored by Git.
 
 Start Synera and Photon in separate PowerShell windows:
 

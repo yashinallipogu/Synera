@@ -1,14 +1,14 @@
 [
-  { "id": "u1", "name": "Maya", "major": "Design", "offers": ["Figma", "Canva"], "wants": ["Python"], "availability": ["Tue pm", "Thu pm"], "swaps": 4, "location": { "lat": 42.2759, "lng": -83.7385 } },
-  { "id": "u2", "name": "Jordan", "major": "Biology", "offers": ["Spanish", "Statistics"], "wants": ["Excel", "Chemistry"], "availability": ["Mon pm", "Thu pm"], "swaps": 2, "location": { "lat": 42.2735, "lng": -83.7419 } },
-  { "id": "u3", "name": "Priya", "major": "Media Arts", "offers": ["Figma", "Video editing"], "wants": ["JavaScript"], "availability": ["Tue pm", "Fri am"], "swaps": 1, "location": { "lat": 42.2768, "lng": -83.7424 } },
-  { "id": "u4", "name": "Marcus", "major": "Music", "offers": ["Guitar", "Piano"], "wants": ["Python"], "availability": ["Wed pm"], "swaps": 3, "location": { "lat": 42.2717, "lng": -83.7394 } },
-  { "id": "u5", "name": "Sofia", "major": "Business", "offers": ["Spanish", "Korean"], "wants": ["Python", "Resume review"], "availability": ["Tue pm", "Wed pm"], "swaps": 5, "location": { "lat": 42.2746, "lng": -83.7369 } },
-  { "id": "u6", "name": "Devon", "major": "Math", "offers": ["Calculus", "Statistics"], "wants": ["Excel"], "availability": ["Mon pm"], "swaps": 0, "location": { "lat": 42.2772, "lng": -83.7398 } },
-  { "id": "u7", "name": "Aisha", "major": "Marketing", "offers": ["Canva", "Photography"], "wants": ["Excel", "Interview prep"], "availability": ["Thu pm"], "swaps": 2, "location": { "lat": 42.2739, "lng": -83.7432 } },
-  { "id": "u8", "name": "Liam", "major": "Info Systems", "offers": ["Figma", "JavaScript"], "wants": ["Excel"], "availability": ["Thu pm", "Fri am"], "swaps": 1, "location": { "lat": 42.2763, "lng": -83.7372 } },
-  { "id": "u9", "name": "Chloe", "major": "English", "offers": ["Essay writing", "Resume review"], "wants": ["Python"], "availability": ["Tue pm"], "swaps": 6, "location": { "lat": 42.2727, "lng": -83.7422 } },
-  { "id": "u10", "name": "Ben", "major": "Communications", "offers": ["Python", "Public speaking"], "wants": ["Spanish"], "availability": ["Wed pm", "Thu pm"], "swaps": 2, "location": { "lat": 42.2749, "lng": -83.7442 } },
-  { "id": "u11", "name": "Nina", "major": "Linguistics", "offers": ["Spanish"], "wants": ["Guitar"], "availability": ["Mon pm", "Tue pm"], "swaps": 3, "location": { "lat": 42.2776, "lng": -83.7429 } },
-  { "id": "u12", "name": "Omar", "major": "Chemistry", "offers": ["Excel", "Chemistry"], "wants": ["Figma", "Photography"], "availability": ["Fri am"], "swaps": 1, "location": { "lat": 42.2722, "lng": -83.7374 } }
+  { "id": "u1", "name": "Maya", "major": "Design", "offers": ["Figma", "Canva"], "wants": ["Python"], "availability": ["Tue pm", "Thu pm"], "swaps": 4 },
+  { "id": "u2", "name": "Jordan", "major": "Biology", "offers": ["Spanish", "Statistics"], "wants": ["Excel", "Chemistry"], "availability": ["Mon pm", "Thu pm"], "swaps": 2 },
+  { "id": "u3", "name": "Priya", "major": "Media Arts", "offers": ["Figma", "Video editing"], "wants": ["JavaScript"], "availability": ["Tue pm", "Fri am"], "swaps": 1 },
+  { "id": "u4", "name": "Marcus", "major": "Music", "offers": ["Guitar", "Piano"], "wants": ["Python"], "availability": ["Wed pm"], "swaps": 3 },
+  { "id": "u5", "name": "Sofia", "major": "Business", "offers": ["Spanish", "Korean"], "wants": ["Python", "Resume review"], "availability": ["Tue pm", "Wed pm"], "swaps": 5 },
+  { "id": "u6", "name": "Devon", "major": "Math", "offers": ["Calculus", "Statistics"], "wants": ["Excel"], "availability": ["Mon pm"], "swaps": 0 },
+  { "id": "u7", "name": "Aisha", "major": "Marketing", "offers": ["Canva", "Photography"], "wants": ["Excel", "Interview prep"], "availability": ["Thu pm"], "swaps": 2 },
+  { "id": "u8", "name": "Liam", "major": "Info Systems", "offers": ["Figma", "JavaScript"], "wants": ["Excel"], "availability": ["Thu pm", "Fri am"], "swaps": 1 },
+  { "id": "u9", "name": "Chloe", "major": "English", "offers": ["Essay writing", "Resume review"], "wants": ["Python"], "availability": ["Tue pm"], "swaps": 6 },
+  { "id": "u10", "name": "Ben", "major": "Communications", "offers": ["Python", "Public speaking"], "wants": ["Spanish"], "availability": ["Wed pm", "Thu pm"], "swaps": 2 },
+  { "id": "u11", "name": "Nina", "major": "Linguistics", "offers": ["Spanish"], "wants": ["Guitar"], "availability": ["Mon pm", "Tue pm"], "swaps": 3 },
+  { "id": "u12", "name": "Omar", "major": "Chemistry", "offers": ["Excel", "Chemistry"], "wants": ["Figma", "Photography"], "availability": ["Fri am"], "swaps": 1 }
 ]

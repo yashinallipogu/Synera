@@ -234,8 +234,8 @@ export function createAuthHandler() {
     conversation && (conversation.first_account_id === accountId || conversation.second_account_id === accountId);
 
   const photonSend = async (phone, text) => {
-    const projectId = process.env.PROJECT_ID;
-    const projectSecret = process.env.PROJECT_SECRET;
+    const projectId = process.env.PROJECT_ID || process.env.SPECTRUM_PROJECT_ID;
+    const projectSecret = process.env.PROJECT_SECRET || process.env.SPECTRUM_PROJECT_SECRET;
     if (!projectId || !projectSecret || !phone) return { ok: false, status: 503, reason: "not_configured" };
     try {
       const response = await fetch(process.env.SYNERA_PHOTON_BRIDGE_URL || "http://127.0.0.1:5190/api/send", {

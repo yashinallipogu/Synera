@@ -5,16 +5,21 @@ import { imessage } from "@spectrum-ts/imessage";
 // Spectrum bridges a single agent loop to many messaging interfaces.
 // Each provider in `providers` adds an interface (terminal TUI, iMessage, …).
 // Docs: https://photon.codes/docs/spectrum-ts
+const projectId = process.env.PROJECT_ID || process.env.SPECTRUM_PROJECT_ID;
+const projectSecret = process.env.PROJECT_SECRET || process.env.SPECTRUM_PROJECT_SECRET;
+if (!projectId || !projectSecret) {
+  throw new Error("Set PROJECT_ID and PROJECT_SECRET (or SPECTRUM_PROJECT_ID and SPECTRUM_PROJECT_SECRET) in synera-photon/.env.");
+}
+
 const app = await Spectrum({
-  projectId: process.env.PROJECT_ID!,
-  projectSecret: process.env.PROJECT_SECRET!,
+  projectId,
+  projectSecret,
   providers: [
     // imessage
     imessage.config(),
   ],
 });
 
-const projectSecret = process.env.PROJECT_SECRET!;
 const bridgePort = Number(process.env.PHOTON_BRIDGE_PORT) || 5190;
 const bridge = createServer(async (request, response) => {
   if (request.method !== "POST" || request.url !== "/api/send") {

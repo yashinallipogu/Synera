@@ -17,12 +17,13 @@ const photonEnvPaths = [
   path.join(root, "synera-photon", ".env"),
   path.resolve(root, "..", "synera-photon", ".env"),
 ].filter(Boolean);
-if (!process.env.PROJECT_SECRET) {
+if (!process.env.PROJECT_SECRET && !process.env.SPECTRUM_PROJECT_SECRET) {
   for (const photonEnvPath of photonEnvPaths) {
     if (!existsSync(photonEnvPath)) continue;
     process.loadEnvFile(photonEnvPath);
-    if (process.env.PROJECT_SECRET) break;
+    if (process.env.PROJECT_SECRET || process.env.SPECTRUM_PROJECT_SECRET) break;
     delete process.env.PROJECT_SECRET;
+    delete process.env.SPECTRUM_PROJECT_SECRET;
   }
 }
 const port = Number(process.env.PORT) || 3000;
