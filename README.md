@@ -4,6 +4,8 @@ Synera connects people with others who want to learn, study, teach or collaborat
 
 On Synera people can create a profile for themselves and then add their skills and interests. After that, you can find people that share your interests and skills and connect with them. Once you establish that you can work with them, you can schedule a meetup at any of the locations found on the map on our website where you can find a comfortable environment to learn and collaborate.
 
+> Current scope:
+
 ## Run locally
 
 Requires Node.js 24 or newer.
