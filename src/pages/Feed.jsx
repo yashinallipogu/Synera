@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Nav from "../components/Nav";
 import SkillGroup from "../components/SkillGroup";
 import MatchCard from "../components/MatchCard";
+import StudyHelper from "../components/StudyHelper";
 import StudySpotMap from "../components/StudySpotMap";
 import { SKILLS } from "../data/skills";
 import { findNearbyStudySpots, getSpotRating, loadSpotReviews, saveSpotReviews, STUDY_SPOTS } from "../data/studySpots";
@@ -249,6 +250,11 @@ export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditO
               onPropose={planMeetup}
             />
           ))}
+
+          <StudyHelper
+            skills={[...new Set([...skills, ...profile.offers, ...profile.wants])]}
+            partners={matches.map((match) => match.user)}
+          />
 
           <section className="spots-section" id="study-spots">
             <div className="spots-heading">

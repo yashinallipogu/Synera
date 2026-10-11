@@ -1,9 +1,12 @@
+import "dotenv/config";
+import express from "express";
 import { createServer } from "node:http";
 import process from "node:process";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createStudyHelperRouter } from "./api/study-helper-router.js";
 import { createAuthHandler } from "./server/auth.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -29,6 +32,8 @@ if (!process.env.PROJECT_SECRET && !process.env.SPECTRUM_PROJECT_SECRET) {
 const port = Number(process.env.PORT) || 3000;
 const host = process.env.HOST || "0.0.0.0";
 const auth = createAuthHandler();
+const studyHelper = express();
+studyHelper.use("/api", createStudyHelperRouter(process.env.GEMINI_API_KEY));
 const vite = production ? null : await (await import("vite")).createServer({
   configFile: path.join(root, "vite.config.js"),
   server: { middlewareMode: true },
@@ -71,7 +76,16 @@ async function serveProductionFile(request, response) {
 }
 
 const server = createServer(async (request, response) => {
-  if (new URL(request.url, "http://localhost").pathname.startsWith("/api/")) {
+  const pathname = new URL(request.url, "http://localhost").pathname;
+  if (pathname === "/api/study-helper" || pathname === "/api/study-helper/") {
+    studyHelper(request, response, (error) => {
+      if (!error) return;
+      console.error(`Study helper request failed: ${error.message}`);
+      if (!response.headersSent) response.writeHead(500).end("Internal server error");
+    });
+    return;
+  }
+  if (pathname.startsWith("/api/")) {
     await auth.handler(request, response);
     return;
   }

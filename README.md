@@ -49,3 +49,9 @@ npm.cmd run start
 Each opted-in recipient's verified number must also be added to Photon **Users** before delivery. The shared line only reaches added iMessage users; it is not general SMS. A dedicated line is a Photon plan feature.
 
 The reminder worker runs in the Synera server and checks for accepted meetups within one hour of their start. Keep both services running for chat alerts and reminders to work. Never expose Photon credentials in browser code.
+
+## AI study helper
+
+The feed includes a Gemini-powered helper for making flashcards, icebreakers, mini-lessons, and other study-swap activities. Copy `.env.example` to `.env` in the project root and set `GEMINI_API_KEY` to a Google AI Studio API key. Keep `.env` local; it is ignored by Git and the key is only read by the server.
+
+Restart `npm run dev` after changing `.env`. For production, run `npm run build` followed by `npm start` (or `npm run preview`); both serve the built app and the `/api/study-helper` endpoint. The server uses port 5173 by default, or the port set in `PORT`.
