@@ -4,7 +4,7 @@ import SkillGroup from "../components/SkillGroup";
 import MatchCard from "../components/MatchCard";
 import StudySpotMap from "../components/StudySpotMap";
 import { SKILLS } from "../data/skills";
-import { getSpotRating, loadSpotReviews, saveSpotReviews, STUDY_SPOTS } from "../data/studySpots";
+import { findNearbyStudySpots, getSpotRating, loadSpotReviews, saveSpotReviews, STUDY_SPOTS } from "../data/studySpots";
 import { readApiJson } from "../lib/api";
 import "../styles/FeedFeatures.css";
 
@@ -26,35 +26,80 @@ function distanceKm(first, second) {
   return 6371 * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
 }
 
-function recommendSpot(partner, userLocation, reviews) {
+function recommendSpot(partner, userLocation, reviews, spots) {
   const first = userLocation || CAMPUS_CENTER;
   const second = partner?.location || CAMPUS_CENTER;
   const midpoint = { lat: (first.lat + second.lat) / 2, lng: (first.lng + second.lng) / 2 };
-  const reachable = STUDY_SPOTS.filter((spot) => distanceKm(first, spot) <= 2.5 && distanceKm(second, spot) <= 2.5);
+  const reachable = spots.filter((spot) => distanceKm(first, spot) <= 2.5 && distanceKm(second, spot) <= 2.5);
   return [...reachable].sort((a, b) => {
-    const score = (spot) => getSpotRating(spot, reviews).rating - distanceKm(midpoint, spot) * 0.3;
+    const score = (spot) => (getSpotRating(spot, reviews).rating ?? 0) - distanceKm(midpoint, spot) * 0.3;
     return score(b) - score(a);
   })[0];
 }
 
+function spotLabel(state) {
+  if (state === "nearby") return "NEARBY PLACES · OPENSTREETMAP";
+  if (state === "loading") return "SEARCHING NEARBY…";
+  if (state === "error") return "COULD NOT LOAD NEARBY PLACES";
+  if (state === "empty") return "NO NEARBY PLACES FOUND";
+  return "DEMO CAMPUS · SAMPLE RATINGS";
+}
+
 export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditOffers, onEditWants, onOpenChat, onShowChats, onProfileChange }) {
+  const hasLocation = Boolean(profile.location);
   const [filter, setFilter] = useState("all");
   const [matches, setMatches] = useState([]);
   const [loadError, setLoadError] = useState("");
   const [chatError, setChatError] = useState("");
   const [profileError, setProfileError] = useState("");
   const [activePartner, setActivePartner] = useState(null);
-  const [selectedSpotId, setSelectedSpotId] = useState("hatcher");
+  // Only show the sample (Michigan) spots when there is no location at all.
+  const [spots, setSpots] = useState(hasLocation ? [] : STUDY_SPOTS);
+  const [spotLoadState, setSpotLoadState] = useState(hasLocation ? "loading" : "demo");
+  const [spotLoadError, setSpotLoadError] = useState("");
+  const [selectedSpotId, setSelectedSpotId] = useState(hasLocation ? "" : "hatcher");
   const [reviews, setReviews] = useState(loadSpotReviews);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
   const [reviewOpen, setReviewOpen] = useState(false);
   const skills = [...new Set([...SKILLS, ...(profile.customSkills || [])])];
-  const selectedSpot = STUDY_SPOTS.find((spot) => spot.id === selectedSpotId) || STUDY_SPOTS[0];
-  const spotRating = getSpotRating(selectedSpot, reviews);
-  const recommendation = recommendSpot(activePartner, profile.location, reviews);
+  const selectedSpot = spots.find((spot) => spot.id === selectedSpotId) || spots[0] || null;
+  const spotRating = selectedSpot ? getSpotRating(selectedSpot, reviews) : null;
+  const recommendation = recommendSpot(activePartner, profile.location, reviews, spots);
   const perfect = matches.filter((m) => m.type === "perfect").length;
   const shown = filter === "all" ? matches : matches.filter((m) => m.type === filter);
+  const locationLat = profile.location?.lat ?? null;
+  const locationLng = profile.location?.lng ?? null;
+
+  useEffect(() => {
+    if (locationLat === null || locationLng === null) return undefined;
+    let cancelled = false;
+    Promise.resolve()
+      .then(() => {
+        if (cancelled) return null;
+        setSpots([]);
+        setSpotLoadState("loading");
+        setSpotLoadError("");
+        setSelectedSpotId("");
+        return findNearbyStudySpots({ lat: locationLat, lng: locationLng });
+      })
+      .then((nearbySpots) => {
+        if (cancelled || nearbySpots === null) return;
+        setSpots(nearbySpots);
+        setSpotLoadState(nearbySpots.length ? "nearby" : "empty");
+        setSpotLoadError("");
+        setSelectedSpotId(nearbySpots[0]?.id || "");
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        console.error("Nearby study spot search failed:", error);
+        setSpots([]);
+        setSpotLoadState("error");
+        setSpotLoadError("Nearby places could not be loaded from OpenStreetMap. Check your connection and try again.");
+        setSelectedSpotId("");
+      });
+    return () => { cancelled = true; };
+  }, [locationLat, locationLng]);
 
   useEffect(() => {
     let active = true;
@@ -92,12 +137,13 @@ export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditO
   };
   const planMeetup = (match) => {
     setActivePartner(match.user);
-    const suggestion = recommendSpot(match.user, profile.location, reviews);
+    const suggestion = recommendSpot(match.user, profile.location, reviews, spots);
     if (suggestion) setSelectedSpotId(suggestion.id);
     document.getElementById("study-spots")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const submitReview = (event) => {
     event.preventDefault();
+    if (!selectedSpot) return;
     const next = {
       ...reviews,
       [selectedSpot.id]: [
@@ -211,14 +257,16 @@ export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditO
                 <h2 className="display">Meet somewhere good</h2>
                 <p>Choose a match to find a high-rated place near the midpoint between you both.</p>
               </div>
-              <span className="demo-note">Demo data</span>
+              <span className="demo-note">{spotLabel(spotLoadState)}</span>
             </div>
+            {spotLoadError && <p className="map-load-note" role="status">{spotLoadError}</p>}
+            {spotLoadState === "empty" && <p className="map-load-note" role="status">No named study-friendly places were found within 2.5 km. Try again later or pan the map.</p>}
             {activePartner && recommendation && (
               <div className="meetup-suggestion">
                 <span className="suggestion-icon">★</span>
                 <div>
                   <b>Suggested for you and {activePartner.name}: {recommendation.name}</b>
-                  <span>{getSpotRating(recommendation, reviews).rating.toFixed(1)} rating · {getSpotRating(recommendation, reviews).reviews} reviews · near your shared midpoint</span>
+                  <span>{getSpotRating(recommendation, reviews).rating?.toFixed(1) || "No rating yet"} · {getSpotRating(recommendation, reviews).reviews} reviews · near your shared midpoint</span>
                 </div>
                 <button className="btn ghost" type="button" onClick={() => setSelectedSpotId(recommendation.id)}>Show on map</button>
                 <button className="btn" type="button" onClick={() => openChat(activePartner.id)}>Continue in chat</button>
@@ -229,31 +277,36 @@ export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditO
             )}
             <div className="spots-layout">
               <StudySpotMap
-                spots={STUDY_SPOTS}
+                spots={spots}
                 reviews={reviews}
                 selectedSpotId={selectedSpotId}
                 onSelectSpot={setSelectedSpotId}
                 userLocation={profile.location}
                 peerLocation={activePartner?.location}
                 peerName={activePartner?.name}
-                onUserLocation={(location) => saveProfile({ ...profile, location })}
+                onUserLocation={(location) => onProfileChange({ ...profile, location })}
               />
               <div className="spot-details">
                 <div className="spot-list" aria-label="Rated study spots">
-                  {STUDY_SPOTS.map((spot) => {
+                  {spots.map((spot) => {
                     const rating = getSpotRating(spot, reviews);
                     return (
-                      <button key={spot.id} className={`spot-option${selectedSpot.id === spot.id ? " selected" : ""}`} type="button" onClick={() => setSelectedSpotId(spot.id)}>
+                      <button key={spot.id} className={`spot-option${selectedSpot?.id === spot.id ? " selected" : ""}`} type="button" onClick={() => setSelectedSpotId(spot.id)}>
                         <span><b>{spot.name}</b><small>{spot.type}</small></span>
-                        <strong>★ {rating.rating.toFixed(1)}</strong>
+                        <strong className={rating.rating === null ? "unrated" : ""}>{rating.rating === null ? "New" : `★ ${rating.rating.toFixed(1)}`}</strong>
                       </button>
                     );
                   })}
+                  {spots.length === 0 && (
+                    <p className="spot-empty">
+                      {spotLoadState === "loading" ? "Searching for places near you…" : "No nearby places to show."}
+                    </p>
+                  )}
                 </div>
-                <div className="spot-selected">
+                {selectedSpot ? <div className="spot-selected">
                   <span className="spot-type">{selectedSpot.type}</span>
                   <h3>{selectedSpot.name}</h3>
-                  <div className="spot-rating"><b>★ {spotRating.rating.toFixed(1)}</b><span>{spotRating.reviews} reviews</span></div>
+                  <div className="spot-rating"><b>{spotRating.rating === null ? "Not rated yet" : `★ ${spotRating.rating.toFixed(1)}`}</b><span>{spotRating.reviews} reviews</span></div>
                   <p>{selectedSpot.note}</p>
                   <button className="btn" type="button" onClick={() => setReviewOpen((open) => !open)}>
                     {reviewOpen ? "Close review" : "Leave a post-session rating"}
@@ -282,10 +335,10 @@ export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditO
                       ))}
                     </div>
                   )}
-                </div>
+                </div> : <div className="spot-empty-state">Choose a rated place on the map or list to see details.</div>}
               </div>
             </div>
-            <p className="map-disclaimer">Venue locations and initial ratings are demo data. Reviews stay in this browser and won’t appear in another browser or on another device. Your location is shared only after you choose Locate me.</p>
+            <p className="map-disclaimer">Interactive OpenStreetMap. Venue ratings and match pins use sample campus data. Your location is shared only after you choose Locate me.</p>
           </section>
         </section>
       </div>
