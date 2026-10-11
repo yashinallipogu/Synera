@@ -2,7 +2,6 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "node:http";
 import process from "node:process";
-import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -14,20 +13,6 @@ const production = process.env.NODE_ENV === "production" || process.argv.include
 if (production) process.env.NODE_ENV = "production";
 if (process.env.VERCEL && !process.env.SYNERA_DATA_DIR) {
   process.env.SYNERA_DATA_DIR = "/tmp/synera";
-}
-const photonEnvPaths = [
-  process.env.SYNERA_PHOTON_ENV_FILE,
-  path.join(root, "synera-photon", ".env"),
-  path.resolve(root, "..", "synera-photon", ".env"),
-].filter(Boolean);
-if (!process.env.PROJECT_SECRET && !process.env.SPECTRUM_PROJECT_SECRET) {
-  for (const photonEnvPath of photonEnvPaths) {
-    if (!existsSync(photonEnvPath)) continue;
-    process.loadEnvFile(photonEnvPath);
-    if (process.env.PROJECT_SECRET || process.env.SPECTRUM_PROJECT_SECRET) break;
-    delete process.env.PROJECT_SECRET;
-    delete process.env.SPECTRUM_PROJECT_SECRET;
-  }
 }
 const port = Number(process.env.PORT) || 3000;
 const host = process.env.HOST || "0.0.0.0";
@@ -104,16 +89,9 @@ server.listen(port, host, () => {
   console.log(`Synera ${production ? "server" : "dev server"} running at http://${host}:${port}`);
 });
 
-const reminderTimer = setInterval(() => {
-  auth.sendDueReminders().catch((error) => console.error(`Meetup reminder worker failed: ${error.message}`));
-}, 30_000);
-reminderTimer.unref();
-auth.sendDueReminders().catch((error) => console.error(`Meetup reminder worker failed: ${error.message}`));
-
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, async () => {
     server.close();
-    clearInterval(reminderTimer);
     auth.close();
     if (vite) await vite.close();
   });

@@ -1,11 +1,10 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Scene from "./components/Scene";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import SkillSetup from "./pages/SkillSetup";
 import Feed from "./pages/Feed";
 import Chat from "./pages/Chat";
-const PhotonDashboard = lazy(() => import("./pages/PhotonDashboard"));
 import { ME } from "./data/me";
 import { readApiJson } from "./lib/api";
 
@@ -17,9 +16,6 @@ const emptyProfile = () => ({
   wants: [],
   customSkills: [],
   location: null,
-  phone: "",
-  textOptIn: false,
-  phoneVerified: false,
 });
 
 const profileFromUser = (user) => {
@@ -39,7 +35,7 @@ const profileIsComplete = (profile) => Boolean(
 );
 
 export default function App() {
-  const [view, setView] = useState(() => window.location.pathname === "/dashboard" ? "photon" : "landing");
+  const [view, setView] = useState("landing");
   const [authMode, setAuthMode] = useState("register");
   const [authUser, setAuthUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -49,8 +45,6 @@ export default function App() {
 
   const navigate = (nextView) => {
     setView(nextView);
-    if (nextView === "photon") window.history.pushState({}, "", "/dashboard");
-    else if (window.location.pathname === "/dashboard") window.history.pushState({}, "", "/");
     window.scrollTo(0, 0);
   };
 
@@ -157,8 +151,6 @@ export default function App() {
       });
     return () => { active = false; };
   }, []);
-
-  if (view === "photon") return <Suspense fallback={<main className="container auth-loading" aria-live="polite">Loading Photon dashboard...</main>}><PhotonDashboard onClose={() => window.location.assign("/")} /></Suspense>;
 
   if (!authChecked) {
     return (
