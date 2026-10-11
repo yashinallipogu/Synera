@@ -80,6 +80,15 @@ function parseProfile(value) {
 }
 
 async function readJson(request) {
+  if (request.body !== undefined) {
+    if (typeof request.body !== "string") return request.body;
+    try {
+      return JSON.parse(request.body);
+    } catch {
+      throw Object.assign(new Error("Please send valid JSON."), { status: 400 });
+    }
+  }
+
   let size = 0;
   const chunks = [];
   for await (const chunk of request) {

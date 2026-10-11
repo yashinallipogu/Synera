@@ -23,6 +23,10 @@ Phone numbers are private to their owners. iMessage alerts are off by default; s
 
 For a production build, run `npm.cmd run build` followed by `npm.cmd run preview`. Production login requires HTTPS so the session cookie can be marked secure.
 
+## Vercel
+
+Vercel serves the Vite build and routes `/api/*` requests through the serverless handler in `api/[...path].js`. The current account database is SQLite in `/tmp`, which is temporary serverless storage; accounts and sessions may reset when Vercel recycles a function. Configure a persistent hosted database before using Vercel for real accounts.
+
 ## Photon messaging
 
 Synera connects to a separate Spectrum iMessage service using the [stable Spectrum SDK](https://photon.codes/docs/spectrum-ts/getting-started) and [iMessage provider](https://photon.codes/docs/spectrum-ts/providers/imessage). Photon exposes a project-secret-protected send endpoint on localhost port 5190; Synera calls it from its server, never from browser code.
