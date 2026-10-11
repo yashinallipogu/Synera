@@ -12,7 +12,7 @@ describe("generateStudyHelperReply", () => {
 
   it("validates conversation messages before calling Gemini", async () => {
     const result = await generateStudyHelperReply({
-      mode: "flashcards",
+      mode: "chat",
       skill: "Python",
       partnerName: "",
       messages: [{ role: "system", content: "invalid role" }],
@@ -27,7 +27,7 @@ describe("generateStudyHelperReply", () => {
     let requestUrl;
     let requestBody;
     const result = await generateStudyHelperReply({
-      mode: "flashcards",
+      mode: "chat",
       skill: "Python",
       partnerName: "Maya",
       messages: [
@@ -42,17 +42,68 @@ describe("generateStudyHelperReply", () => {
         ok: true,
         status: 200,
         json: async () => ({
-          candidates: [{ content: { parts: [{ text: "What does a list store?" }] } }],
+          candidates: [{ content: { parts: [{ text: "A list stores an ordered collection." }] } }],
         }),
       };
     });
 
     assert.equal(result.status, 200);
-    assert.equal(result.body.reply, "What does a list store?");
+    assert.equal(result.body.reply, "A list stores an ordered collection.");
     assert.equal(new URL(requestUrl).searchParams.get("key"), "test-key");
     assert.deepEqual(requestBody.contents.map((message) => message.role), ["user", "model", "user"]);
     assert.match(requestBody.systemInstruction.parts[0].text, /Python/);
     assert.match(requestBody.systemInstruction.parts[0].text, /Maya/);
+  });
+
+  it("requests and returns exactly five structured flashcards", async () => {
+    let requestBody;
+    const cards = Array.from({ length: 5 }, (_, index) => ({
+      question: `Question ${index + 1}?`,
+      answer: `Answer ${index + 1}.`,
+    }));
+    const result = await generateStudyHelperReply({
+      mode: "flashcards",
+      skill: "Python",
+      partnerName: "",
+      messages: [{ role: "user", content: "Make five flashcards." }],
+    }, "test-key", async (_url, options) => {
+      requestBody = JSON.parse(options.body);
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          candidates: [{ content: { parts: [{ text: JSON.stringify({ cards }) }] } }],
+        }),
+      };
+    });
+
+    assert.equal(requestBody.generationConfig.responseMimeType, "application/json");
+    assert.equal(requestBody.generationConfig.responseSchema.properties.cards.type, "ARRAY");
+    assert.equal(result.status, 200);
+    assert.equal(result.body.cards.length, 5);
+    assert.match(result.body.reply, /Card 5\nQuestion: Question 5\?\nAnswer: Answer 5\./);
+  });
+
+  it("rejects flashcard replies that do not contain exactly five valid cards", async () => {
+    const result = await generateStudyHelperReply({
+      mode: "flashcards",
+      skill: "Python",
+      partnerName: "",
+      messages: [{ role: "user", content: "Make five flashcards." }],
+    }, "test-key", async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        candidates: [{
+          content: {
+            parts: [{ text: JSON.stringify({ cards: [{ question: "One?", answer: "One." }] }) }],
+          },
+        }],
+      }),
+    }));
+
+    assert.equal(result.status, 502);
+    assert.match(result.body.error, /five valid flashcards/);
   });
 
   it("reports Gemini rate limits without pretending the request succeeded", async () => {

@@ -1,9 +1,10 @@
 const MODES = new Set(["flashcards", "icebreakers", "mini-lesson", "brainstorm", "chat"]);
 const MAX_MESSAGES = 12;
 const MAX_MESSAGE_LENGTH = 2000;
+const FLASHCARD_COUNT = 5;
 
 const MODE_INSTRUCTIONS = {
-  flashcards: "Create a small set of accurate, concise question-and-answer flashcards that two students can quiz each other with. Number the cards and clearly label each question and answer.",
+  flashcards: `Create exactly ${FLASHCARD_COUNT} accurate, concise question-and-answer flashcards that two students can quiz each other with.`,
   icebreakers: "Suggest friendly, low-pressure icebreakers for two students meeting to learn together. Avoid intrusive or overly personal questions.",
   "mini-lesson": "Create a practical, engaging mini-lesson the students can teach each other. Include a short activity and a clear time estimate.",
   brainstorm: "Suggest several creative, practical ways two students can practice and teach this skill together.",
@@ -70,6 +71,26 @@ export async function generateStudyHelperReply(body, apiKey, fetchImpl = fetch) 
     generationConfig: {
       maxOutputTokens: 900,
       temperature: 0.7,
+      ...(mode === "flashcards" && {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            cards: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  question: { type: "STRING" },
+                  answer: { type: "STRING" },
+                },
+                required: ["question", "answer"],
+              },
+            },
+          },
+          required: ["cards"],
+        },
+      }),
     },
   };
 
@@ -105,18 +126,53 @@ export async function generateStudyHelperReply(body, apiKey, fetchImpl = fetch) 
     };
   }
 
-  const reply = result?.candidates?.[0]?.content?.parts
+  const generatedText = result?.candidates?.[0]?.content?.parts
     ?.map((part) => part.text)
     .filter((text) => typeof text === "string")
     .join("\n")
     .trim();
 
-  if (!reply) {
+  if (!generatedText) {
     return {
       status: 502,
       body: { error: "Gemini did not return a study suggestion. Try rephrasing your request." },
     };
   }
 
-  return { status: 200, body: { reply } };
+  if (mode === "flashcards") {
+    let flashcardSet;
+    try {
+      flashcardSet = JSON.parse(generatedText);
+    } catch {
+      return {
+        status: 502,
+        body: { error: "Gemini did not return five valid flashcards. Please try again." },
+      };
+    }
+
+    const cards = flashcardSet?.cards;
+    if (
+      !Array.isArray(cards)
+      || cards.length !== FLASHCARD_COUNT
+      || cards.some((card) =>
+        !card
+        || typeof card.question !== "string"
+        || !card.question.trim()
+        || typeof card.answer !== "string"
+        || !card.answer.trim()
+      )
+    ) {
+      return {
+        status: 502,
+        body: { error: "Gemini did not return five valid flashcards. Please try again." },
+      };
+    }
+
+    const reply = cards
+      .map((card, index) => `Card ${index + 1}\nQuestion: ${card.question.trim()}\nAnswer: ${card.answer.trim()}`)
+      .join("\n\n");
+    return { status: 200, body: { reply, cards } };
+  }
+
+  return { status: 200, body: { reply: generatedText } };
 }
