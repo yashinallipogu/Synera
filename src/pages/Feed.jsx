@@ -95,7 +95,7 @@ export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditO
         console.error("Nearby study spot search failed:", error);
         setSpots([]);
         setSpotLoadState("error");
-        setSpotLoadError("Nearby places could not be loaded from OpenStreetMap. Check your connection and try again.");
+        setSpotLoadError(error.message || "Nearby places could not be loaded. Please try again.");
         setSelectedSpotId("");
       });
     return () => { cancelled = true; };
@@ -299,7 +299,7 @@ export default function Feed({ profile, onHome, onLogout, onEditProfile, onEditO
                   })}
                   {spots.length === 0 && (
                     <p className="spot-empty">
-                      {spotLoadState === "loading" ? "Searching for places near you…" : "No nearby places to show."}
+                      {spotLoadState === "loading" ? "Searching for places near you…" : spotLoadState === "error" ? "Nearby places are temporarily unavailable." : "No nearby places to show."}
                     </p>
                   )}
                 </div>

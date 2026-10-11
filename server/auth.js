@@ -332,6 +332,56 @@ export function createAuthHandler() {
   const handler = async (request, response) => {
     const url = new URL(request.url, "http://localhost");
     try {
+      if (url.pathname === "/api/study-spots") {
+        if (request.method !== "GET") {
+          return send(response, 405, { error: "Use GET to find nearby study spots." }, { Allow: "GET" });
+        }
+        if (!url.searchParams.has("lat") || !url.searchParams.has("lng")) {
+          return send(response, 400, { error: "Latitude and longitude are required." });
+        }
+
+        const lat = Number(url.searchParams.get("lat"));
+        const lng = Number(url.searchParams.get("lng"));
+        if (!Number.isFinite(lat) || lat < -90 || lat > 90 || !Number.isFinite(lng) || lng < -180 || lng > 180) {
+          return send(response, 400, { error: "A valid latitude and longitude are required." });
+        }
+
+        const query = `[out:json][timeout:20];(nwr(around:2500,${lat},${lng})["amenity"~"^(library|cafe|coworking_space|community_centre|university)$"]["name"];);out center tags;`;
+        let placesResponse;
+        try {
+          placesResponse = await fetch("https://overpass-api.de/api/interpreter", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+              "User-Agent": "Synera study spot finder",
+            },
+            body: new URLSearchParams({ data: query }),
+            signal: AbortSignal.timeout(25_000),
+          });
+        } catch (error) {
+          console.error("OpenStreetMap study spot lookup failed:", error);
+          return send(response, 502, { error: "OpenStreetMap could not be reached. Please try again shortly." });
+        }
+        if (!placesResponse.ok) {
+          console.error(`OpenStreetMap study spot lookup returned HTTP ${placesResponse.status}.`);
+          return send(response, 502, { error: "OpenStreetMap is temporarily unavailable. Please try again shortly." });
+        }
+
+        let places;
+        try {
+          places = await placesResponse.json();
+        } catch (error) {
+          console.error("OpenStreetMap returned invalid study spot data:", error);
+          return send(response, 502, { error: "OpenStreetMap returned invalid data. Please try again shortly." });
+        }
+        if (!Array.isArray(places.elements)) {
+          console.error("OpenStreetMap study spot lookup response is missing its elements.");
+          return send(response, 502, { error: "OpenStreetMap returned invalid data. Please try again shortly." });
+        }
+
+        return send(response, 200, { elements: places.elements });
+      }
+
       if (request.method === "GET" && url.pathname === "/api/auth/me") {
         const user = currentAccount(request);
         return send(response, 200, { user });

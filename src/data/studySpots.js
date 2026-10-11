@@ -1,6 +1,5 @@
 const SPOTS_KEY = "synera-study-spot-reviews";
 const SEARCH_RADIUS_METERS = 2500;
-const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
 
 export const STUDY_SPOTS = [
   { id: "hatcher", name: "Hatcher Graduate Library", type: "Library", lat: 42.2757, lng: -83.7409, rating: 4.8, reviews: 5, note: "Quiet floors, reliable study tables" },
@@ -55,14 +54,17 @@ export async function findNearbyStudySpots(location) {
     throw new TypeError("A valid latitude and longitude are required to find nearby study spots.");
   }
 
-  const query = `[out:json][timeout:20];(nwr(around:${SEARCH_RADIUS_METERS},${lat},${lng})["amenity"~"^(library|cafe|coworking_space|community_centre|university)$"]["name"];);out center tags;`;
-  const response = await fetch(OVERPASS_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-    body: new URLSearchParams({ data: query }),
-  });
+  const params = new URLSearchParams({ lat: String(lat), lng: String(lng) });
+  const response = await fetch(`/api/study-spots?${params}`);
   if (!response.ok) {
-    throw new Error(`Nearby study spot search failed with HTTP ${response.status}.`);
+    let message = `Nearby study spot search failed with HTTP ${response.status}.`;
+    try {
+      const error = await response.json();
+      if (typeof error.error === "string") message = error.error;
+    } catch {
+      // Keep the status-based error when the server does not return JSON.
+    }
+    throw new Error(message);
   }
 
   const result = await response.json();
