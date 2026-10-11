@@ -140,50 +140,6 @@
 .signup-field input::placeholder { color: var(--text-dim); }
 .signup-field input:focus { border-color: var(--blue-tint); box-shadow: 0 0 0 3px rgba(143, 178, 230, 0.12); }
 .signup-field small { color: var(--text-dim); font-size: 0.76rem; }
-.phone-number-control { display: grid; grid-template-columns: minmax(150px, 0.85fr) minmax(0, 1fr); gap: 8px; }
-.phone-number-control select {
-  width: 100%;
-  min-width: 0;
-  min-height: 52px;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: 0.82rem;
-}
-.phone-number-control select:focus { outline: 2px solid var(--blue-tint); outline-offset: 1px; }
-.phone-number-control option { background: var(--bg-2); color: var(--text); }
-.signup-field small.phone-invalid { color: var(--red-tint); }
-.text-consent {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  color: var(--text-soft);
-  font-size: 0.85rem;
-  line-height: 1.5;
-}
-.text-consent input { flex: 0 0 auto; width: 17px; height: 17px; margin: 1px 0 0; accent-color: var(--blue-light); }
-.text-consent-note, .phone-status { grid-column: 1 / -1; color: var(--text-dim); font-size: 0.78rem; line-height: 1.5; }
-.phone-verify-row { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
-.phone-verify-row > .btn { min-height: 45px; }
-.phone-code-input { display: grid; flex: 1; min-width: 210px; gap: 8px; }
-.phone-code-input > div { display: flex; gap: 8px; }
-.phone-code-input input {
-  width: 140px;
-  min-height: 45px;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  letter-spacing: 0.12em;
-}
-.phone-code-input .btn { min-height: 45px; padding: 9px 14px; }
-
 @media (max-width: 380px) {
   .skill-options { grid-template-columns: 1fr; }
 }
@@ -192,6 +148,3 @@
   .signup-fields { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 420px) {
-  .phone-number-control { grid-template-columns: 1fr; }
-}

@@ -11,8 +11,8 @@
     "start": "node server.js --production"
   },
   "dependencies": {
+    "google-auth-library": "^11.2.0",
     "leaflet": "^1.9.4",
-    "libphonenumber-js": "^1.13.15",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

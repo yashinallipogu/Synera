@@ -56,6 +56,12 @@ export default function Auth({ mode, onModeChange, onHome, onSuccess }) {
           <h2 id="auth-title" className="display">{isRegister ? "Create your account" : "Welcome back"}</h2>
           <p className="auth-subtitle">{isRegister ? "Choose a username and password to get started." : "Log in to continue to your profile and matches."}</p>
 
+          <a className="google-auth-button" href="/api/auth/google">
+            <span className="google-auth-mark" aria-hidden="true">G</span>
+            Continue with Google
+          </a>
+          <div className="auth-divider"><span>or use your Synera account</span></div>
+
           <form className="auth-form" onSubmit={submit}>
             <label className="signup-field">
               <span className="label">Username</span>
