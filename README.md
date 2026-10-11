@@ -1,6 +1,8 @@
 # Synera
 
-Synera helps students find campus skill-swap partners. Create an account, complete your profile, and browse ranked matches.
+Synera connects people with others who want to learn, study, teach or collaborate. Users can find people nearby to work with based on their interests and skills, and whether they want to find a study partner, get tutoring, swap skills, work on projects or try out a hobby together.
+
+On Synera people can create a profile for themselves and then add their skills and interests. After that, you can find people that share your interests and skills and connect with them. Once you establish that you can work with them, you can schedule a meetup at any of the locations found on the map on our website where you can find a comfortable environment to learn and collaborate.
 
 ## Run locally
 
