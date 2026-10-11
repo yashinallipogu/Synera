@@ -565,6 +565,9 @@ export function createAuthHandler() {
         if (!delivery.ok && delivery.status === 403) {
           return send(response, 403, { error: "Photon does not allow this number for the active project. Check that the exact international number is saved in this project's Users list." });
         }
+        if (!delivery.ok && delivery.status === 401) {
+          return send(response, 502, { error: "Photon rejected the bridge credentials. Confirm Synera and Photon use the same project secret, then restart both services." });
+        }
         if (!delivery.ok && delivery.reason === "not_configured") {
           return send(response, 503, { error: "Photon is not configured on this server. Add PROJECT_ID and PROJECT_SECRET to synera-photon/.env, install its dependencies, and start the Photon service." });
         }
