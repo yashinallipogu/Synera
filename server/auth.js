@@ -234,8 +234,9 @@ export function createAuthHandler() {
     conversation && (conversation.first_account_id === accountId || conversation.second_account_id === accountId);
 
   const photonSend = async (phone, text) => {
+    const projectId = process.env.PROJECT_ID;
     const projectSecret = process.env.PROJECT_SECRET;
-    if (!projectSecret || !phone) return false;
+    if (!projectId || !projectSecret || !phone) return { ok: false, status: 503, reason: "not_configured" };
     try {
       const response = await fetch(process.env.SYNERA_PHOTON_BRIDGE_URL || "http://127.0.0.1:5190/api/send", {
         method: "POST",
@@ -563,6 +564,12 @@ export function createAuthHandler() {
         const delivery = await photonSend(phone, `Your Synera verification code is ${code}. It expires in 10 minutes.`);
         if (!delivery.ok && delivery.status === 403) {
           return send(response, 403, { error: "Photon does not allow this number for the active project. Check that the exact international number is saved in this project's Users list." });
+        }
+        if (!delivery.ok && delivery.reason === "not_configured") {
+          return send(response, 503, { error: "Photon is not configured on this server. Add PROJECT_ID and PROJECT_SECRET to synera-photon/.env, install its dependencies, and start the Photon service." });
+        }
+        if (!delivery.ok && delivery.status === 0) {
+          return send(response, 503, { error: "The Photon bridge is not running. Start the service in synera-photon, then try again." });
         }
         if (!delivery.ok) return send(response, 502, { error: "Photon could not deliver the code. Check that the Photon service is running, then try again." });
         return send(response, 200, { ok: true });
