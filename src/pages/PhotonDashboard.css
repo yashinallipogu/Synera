@@ -1,0 +1,316 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
+
+.photon-shell {
+  --ph-ink: #18251f;
+  --ph-muted: #76827b;
+  --ph-line: #e7ebe7;
+  --ph-soft: #f5f7f4;
+  --ph-green: #176b4b;
+  --ph-green-bright: #2b9268;
+  --ph-mint: #e9f4ed;
+  --ph-yellow: #f0c35b;
+  min-height: 100vh;
+  background: #f7f8f6;
+  color: var(--ph-ink);
+  font-family: "DM Sans", "Aptos", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.photon-shell * { box-sizing: border-box; }
+.photon-shell button, .photon-shell input { font: inherit; }
+.photon-shell button { color: inherit; }
+.photon-shell a { color: inherit; }
+
+.photon-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 3;
+  display: flex;
+  width: 252px;
+  flex-direction: column;
+  padding: 22px 14px 12px;
+  border-right: 1px solid var(--ph-line);
+  background: #fff;
+}
+
+.photon-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 2px 9px 21px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: "Manrope", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0;
+}
+
+.photon-brand-mark {
+  display: grid;
+  width: 29px;
+  height: 29px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--ph-green);
+  color: #fff;
+  font-size: 15px;
+}
+
+.photon-brand-dot { color: var(--ph-green-bright); }
+.photon-console-label { margin: 5px 0 0 3px; color: #929b95; font: 500 9px "DM Mono", monospace; letter-spacing: 1px; }
+
+.photon-project {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  gap: 10px;
+  margin: 1px 0 23px;
+  padding: 8px 9px;
+  border: 1px solid var(--ph-line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.photon-project-icon { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 6px; background: #eaf1eb; color: #176b4b; font: 800 15px "Manrope", sans-serif; }
+.photon-project-copy, .photon-account > span:nth-child(2) { display: grid; min-width: 0; gap: 1px; }
+.photon-project-copy strong { font-size: 13px; }
+.photon-project-copy small { color: #89948c; font: 500 9px "DM Mono", monospace; letter-spacing: .7px; }
+.photon-chevron { margin-left: auto; color: #96a099; }
+
+.photon-nav { display: grid; gap: 24px; }
+.photon-nav-group { display: grid; gap: 3px; }
+.photon-nav-label { padding: 0 10px 7px; color: #929b95; font: 500 9px "DM Mono", monospace; letter-spacing: 1px; }
+.photon-nav-link { display: flex; min-height: 36px; align-items: center; gap: 10px; padding: 0 10px; border: 0; border-radius: 5px; background: transparent; color: #606e65 !important; text-align: left; cursor: pointer; font-size: 12px !important; transition: background .15s ease, color .15s ease; }
+.photon-nav-link:hover { background: #f5f7f5; color: var(--ph-ink) !important; }
+.photon-nav-link.active { background: #eaf4ed; color: #176b4b !important; font-weight: 700 !important; }
+.photon-nav-symbol { width: 18px; color: #9ca69f; font: 10px "DM Mono", monospace; }
+.photon-nav-link.active .photon-nav-symbol { color: #368665; }
+.photon-nav-count { display: grid; min-width: 19px; height: 19px; margin-left: auto; place-items: center; border-radius: 5px; background: #fff; color: #5c7767; font: 10px "DM Mono", monospace; }
+
+.photon-sidebar-bottom { display: grid; gap: 12px; margin-top: auto; }
+.photon-docs-link { display: flex; align-items: center; gap: 9px; padding: 11px 10px; border-top: 1px solid var(--ph-line); color: #536159 !important; text-decoration: none; font-size: 12px; }
+.photon-docs-link > span { color: var(--ph-green); font-size: 16px; }
+.photon-account { display: flex; align-items: center; gap: 9px; padding: 11px 7px 6px; border: 0; border-top: 1px solid var(--ph-line); background: transparent; text-align: left; cursor: pointer; }
+.photon-avatar { display: grid; width: 32px; height: 32px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #d6e8da; color: #236244; font-size: 10px; font-weight: 700; }
+.photon-account strong { font-size: 11px; font-weight: 600; }
+.photon-account small { color: var(--ph-muted); font-size: 10px; }
+.photon-more { margin-left: auto; color: #829087; letter-spacing: 2px; }
+
+.photon-main { min-height: 100vh; margin-left: 252px; }
+.photon-topbar { position: sticky; top: 0; z-index: 2; display: flex; height: 57px; align-items: center; justify-content: space-between; padding: 0 38px; border-bottom: 1px solid var(--ph-line); background: rgb(255 255 255 / 94%); backdrop-filter: blur(12px); }
+.photon-breadcrumb { display: flex; align-items: center; gap: 11px; color: #77837b; font-size: 11px; }
+.photon-breadcrumb i { color: #c2c9c3; font-style: normal; }
+.photon-breadcrumb strong { color: #39483f; font-weight: 600; }
+.photon-top-actions { display: flex; align-items: center; gap: 18px; }
+.photon-plan-badge { padding: 4px 7px; border: 1px solid #dce9de; border-radius: 3px; background: #f4f8f3; color: #4a7558; font: 9px "DM Mono", monospace; letter-spacing: .5px; }
+.photon-line-live i, .photon-command-foot i { width: 7px; height: 7px; border-radius: 50%; background: #49a879; box-shadow: 0 0 0 3px #e6f4ea; }
+.photon-help { display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid #e1e7e1; border-radius: 50%; background: #f7f9f6; color: #567160 !important; cursor: pointer; font: 700 10px "Manrope", sans-serif !important; }
+
+.photon-content { width: min(100%, 1120px); margin: 0 auto; padding: 41px 42px 22px; }
+.photon-page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+.photon-eyebrow { color: #7d8981; font: 500 9px "DM Mono", monospace; letter-spacing: 1.05px; }
+.photon-eyebrow > span { padding: 0 4px; color: #bdc5be; }
+.photon-page-heading h1 { margin: 9px 0 5px; font: 700 29px/1.2 "Manrope", "DM Sans", sans-serif; letter-spacing: 0; }
+.photon-page-heading p { margin: 0; color: #758078; font-size: 12px; }
+.photon-completion { padding-bottom: 5px; color: #8a958e; font: 10px "DM Mono", monospace; }
+.photon-completion span { color: var(--ph-green); font-weight: 500; }
+.photon-progress { height: 3px; margin: 0 0 26px; overflow: hidden; border-radius: 5px; background: #e8ece8; }
+.photon-progress span { display: block; width: 33.333%; height: 100%; border-radius: inherit; background: #319066; }
+
+.photon-step { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 15px; }
+.photon-step-marker { position: relative; display: flex; justify-content: center; padding-top: 1px; }
+.photon-step-marker > span { z-index: 1; display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #cde3d3; border-radius: 50%; background: #ecf6ee; color: #28714f; font: 11px "DM Mono", monospace; }
+.photon-step:not(:first-of-type) .photon-step-marker > span { border-color: #e1e6e1; background: #fff; color: #829087; }
+.photon-step-marker > i { position: absolute; top: 31px; bottom: 0; left: 50%; width: 1px; background: #e3e9e3; }
+.photon-step-body { min-width: 0; padding: 1px 0 28px; }
+.photon-step:not(:first-of-type) .photon-step-body { padding-top: 22px; border-top: 1px solid var(--ph-line); }
+.photon-step-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin: 0 0 15px; }
+.photon-step-heading h2 { margin: 4px 0 3px; font: 700 16px/1.4 "Manrope", sans-serif; letter-spacing: 0; }
+.photon-step-heading p { margin: 0; color: #78847c; font-size: 11px; }
+.photon-step-state { margin-top: 3px; padding: 4px 7px; border: 1px solid #d7e9dc; border-radius: 3px; color: #3b805b; font: 9px "DM Mono", monospace; letter-spacing: .4px; white-space: nowrap; }
+.photon-step-state.muted { border-color: #e7ebe7; color: #919a94; }
+
+.photon-platform-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.photon-platform { display: flex; min-height: 77px; align-items: flex-start; gap: 10px; padding: 12px 11px; border: 1px solid #e5eae5; border-radius: 5px; background: #fff; text-align: left; cursor: pointer; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease; }
+.photon-platform:hover { border-color: #bfd7c5; }
+.photon-platform.selected { border-color: #4c9a6e; background: #f5faf5; box-shadow: inset 0 0 0 1px #4c9a6e; }
+.photon-platform-icon { display: grid; width: 27px; height: 27px; flex: 0 0 auto; place-items: center; border-radius: 6px; background: #edf4ee; color: #26714e; font: 600 15px "Manrope", sans-serif; }
+.photon-platform-icon.whatsapp { background: #e9f5ee; color: #24945b; }
+.photon-platform-icon.telegram { background: #edf3f7; color: #4180a1; }
+.photon-platform-copy { display: grid; min-width: 0; gap: 3px; }
+.photon-platform-copy strong { font-size: 11px; font-weight: 700; }
+.photon-platform-copy small { color: #758078; font-size: 9px; line-height: 1.45; }
+.photon-radio { display: grid; width: 14px; height: 14px; flex: 0 0 auto; place-items: center; margin: 1px 0 0 auto; border: 1px solid #cbd3cc; border-radius: 50%; }
+.photon-platform.selected .photon-radio { border-color: #37865e; }
+.photon-platform.selected .photon-radio i { width: 6px; height: 6px; border-radius: 50%; background: #37865e; }
+
+.photon-command-box { overflow: hidden; border: 1px solid #263a30; border-radius: 5px; background: #1e2e26; color: #dce8de; }
+.photon-command-toolbar { display: flex; height: 39px; align-items: center; justify-content: space-between; padding: 0 11px; border-bottom: 1px solid #34463b; }
+.photon-package-tabs { display: flex; align-self: stretch; gap: 4px; }
+.photon-package-tabs button { position: relative; padding: 0 9px; border: 0; background: transparent; color: #a6b4a9 !important; cursor: pointer; font-size: 10px !important; }
+.photon-package-tabs button.active { color: #fff !important; }
+.photon-package-tabs button.active::after { position: absolute; right: 7px; bottom: -1px; left: 7px; height: 2px; background: #7cc69b; content: ""; }
+.photon-copy-button { display: flex; align-items: center; gap: 6px; padding: 4px 7px; border: 1px solid #47594d; border-radius: 3px; background: #2a3c31; color: #e0e9e2 !important; cursor: pointer; font-size: 9px !important; }
+.photon-copy-button span { color: #99caa8; }
+.photon-command-box > code { display: block; overflow-x: auto; padding: 16px 14px 15px; color: #e2e9df; font: 10px/1.6 "DM Mono", monospace; white-space: nowrap; }
+.photon-terminal-prompt { color: #8ed0a5; }
+.photon-command-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 13px; border-top: 1px solid #34463b; color: #a3b0a6; font-size: 9px; }
+.photon-command-foot > span:first-child { display: flex; align-items: center; gap: 7px; color: #a7c9af; }
+.photon-command-foot i { width: 5px; height: 5px; box-shadow: none; }
+.photon-command-foot b { color: #d9e4da; font-family: "DM Mono", monospace; font-weight: 400; }
+.photon-manual-toggle { display: flex; width: 100%; align-items: center; gap: 8px; padding: 12px 0 1px; border: 0; background: transparent; color: #5c6b61 !important; text-align: left; cursor: pointer; font-size: 10px !important; }
+.photon-manual-toggle > span { color: #28805a; font-size: 15px; }
+.photon-manual-toggle > i { margin-left: auto; color: #849188; font-style: normal; }
+.photon-manual-panel { display: grid; gap: 10px; margin-top: 11px; padding: 13px; border: 1px solid var(--ph-line); border-radius: 4px; background: #fff; }
+.photon-manual-panel > p { margin: 0; color: #66736a; font-size: 11px; }
+.photon-manual-panel > code { width: fit-content; padding: 8px 10px; border-radius: 3px; background: #eef3ef; color: #325641; font: 10px "DM Mono", monospace; }
+.photon-env-row { display: grid; grid-template-columns: 135px minmax(0, 1fr) auto; align-items: center; gap: 9px; padding-top: 9px; border-top: 1px solid #edf0ed; }
+.photon-env-row > span { color: #66736a; font: 9px "DM Mono", monospace; }
+.photon-env-row > code { overflow: hidden; color: #526259; font: 9px "DM Mono", monospace; text-overflow: ellipsis; white-space: nowrap; }
+.photon-env-row > button, .photon-line-actions button, .photon-line-actions a { padding: 5px 8px; border: 1px solid #dfe7e0; border-radius: 3px; background: #fff; color: #35684a !important; text-decoration: none; cursor: pointer; font-size: 9px !important; }
+
+.photon-test-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(205px, .8fr); gap: 10px; }
+.photon-line-panel { min-width: 0; padding: 14px; border: 1px solid #e3e9e3; border-radius: 5px; background: #fff; }
+.photon-line-top { display: flex; align-items: center; gap: 9px; }
+.photon-line-top > span:nth-child(2) { display: grid; gap: 1px; }
+.photon-line-top strong { font-size: 10px; }
+.photon-line-top small { color: #869189; font: 9px "DM Mono", monospace; letter-spacing: .4px; }
+.photon-line-live { display: flex; align-items: center; gap: 7px; margin-left: auto; color: #548064; font-size: 9px; }
+.photon-line-live i { width: 6px; height: 6px; box-shadow: none; }
+.photon-phone-number { margin: 15px 0 2px; color: #1c3226; font: 600 24px "Manrope", sans-serif; letter-spacing: .2px; }
+.photon-line-note { max-width: 370px; margin: 3px 0 12px; color: #78847c; font-size: 10px; }
+.photon-line-actions { display: flex; gap: 7px; }
+.photon-line-actions button { font-size: 9px !important; }
+.photon-line-actions a { border-color: transparent; background: #eff6f0; }
+.photon-connect-note { margin-top: 15px; padding: 12px; border-radius: 4px; background: #f3f6f3; color: #657269; font-size: 10px; }
+.photon-next-panel { position: relative; padding: 13px; border: 1px solid #dce9de; border-radius: 5px; background: #f0f6f0; }
+.photon-next-icon { position: absolute; top: 12px; right: 12px; color: #79a989; font-size: 14px; }
+.photon-next-panel .photon-eyebrow { color: #63836d; font-size: 8px; }
+.photon-next-panel h3 { margin: 6px 0 3px; font: 700 13px "Manrope", sans-serif; }
+.photon-next-panel p { margin: 0 0 10px; color: #6d7b70; font-size: 10px; line-height: 1.5; }
+.photon-next-panel > button { padding: 0; border: 0; background: transparent; color: #28744d !important; cursor: pointer; font-size: 10px !important; font-weight: 700 !important; }
+.photon-next-panel > button span { margin-left: 5px; }
+.photon-next-docs { display: flex; align-items: center; gap: 11px; margin-top: 11px; padding: 12px; border: 1px solid var(--ph-line); border-radius: 5px; background: #fff; }
+.photon-docs-glyph { display: grid; width: 28px; height: 28px; flex: 0 0 auto; place-items: center; border-radius: 5px; background: #f8f1de; color: #a37a20; }
+.photon-next-docs > div { min-width: 0; }
+.photon-next-docs strong { font-size: 10px; }
+.photon-next-docs p { margin: 2px 0 0; color: #7a857d; font-size: 9px; }
+.photon-next-docs > a { display: flex; flex: 0 0 auto; align-items: center; gap: 6px; margin-left: auto; color: #327550; text-decoration: none; font-size: 9px; font-weight: 700; }
+.photon-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 5px 0 0 57px; padding: 12px 0; border-top: 1px solid var(--ph-line); color: #8b968e; font-size: 9px; }
+.photon-footer code { color: #66736a; font: 9px "DM Mono", monospace; }
+.photon-footer a { color: #67816e; text-decoration: none; }
+
+.photon-section-page { min-height: calc(100vh - 57px); padding-top: 48px; }
+.photon-section-page .photon-page-heading { align-items: flex-end; margin-bottom: 27px; }
+.photon-primary-button { display: inline-flex; min-height: 34px; align-items: center; gap: 10px; padding: 0 11px; border: 1px solid #216c4a; border-radius: 4px; background: #216c4a; color: #fff !important; cursor: pointer; font-size: 10px !important; font-weight: 600 !important; }
+.photon-primary-button span { font-size: 15px; font-weight: 400; }
+.photon-data-panel { overflow: hidden; border: 1px solid #e2e8e2; border-radius: 5px; background: #fff; }
+.photon-table-head { display: flex; height: 48px; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid #e8ece8; }
+.photon-table-head strong { font-size: 11px; }
+.photon-table-head span { color: #879189; font-size: 10px; }
+.photon-user-row { display: flex; min-height: 63px; align-items: center; gap: 10px; padding: 8px 15px; border-bottom: 1px solid #edf0ed; }
+.photon-user-name { display: grid; gap: 2px; }
+.photon-user-name strong { font-size: 11px; font-weight: 600; }
+.photon-user-name small { color: #808b83; font-size: 10px; }
+.photon-access-tag, .photon-pending-tag { margin-left: auto; padding: 4px 7px; border-radius: 3px; background: #eff6f0; color: #3c7852; font-size: 9px; }
+.photon-pending-tag { background: #f5f5ef; color: #8b7845; }
+.photon-row-menu { display: grid; width: 25px; height: 25px; place-items: center; margin-left: 8px; border: 0; background: transparent; color: #879189 !important; cursor: pointer; font-size: 17px !important; }
+.photon-table-foot { padding: 12px 15px; color: #818c84; font-size: 10px; }
+.photon-platform-row { display: flex; width: 100%; min-height: 65px; align-items: center; gap: 11px; padding: 10px 15px; border: 0; border-bottom: 1px solid #edf0ed; background: #fff; text-align: left; cursor: pointer; }
+.photon-platform-row:last-child { border-bottom: 0; }
+.photon-platform-row > span:nth-child(2) { display: grid; gap: 2px; }
+.photon-platform-row strong { font-size: 11px; }
+.photon-platform-row small { color: #7f8982; font-size: 10px; }
+.photon-platform-row > span:last-child { color: #849087; }
+.photon-info-panel { min-height: 150px; padding: 18px; }
+.photon-info-row { display: flex; align-items: flex-start; gap: 12px; }
+.photon-info-icon { display: grid; width: 31px; height: 31px; flex: 0 0 auto; place-items: center; border-radius: 5px; background: #eff5ef; color: #397250; }
+.photon-info-row strong { font-size: 12px; }
+.photon-info-row p { margin: 4px 0 0; color: #7c877f; font-size: 10px; }
+.photon-inline-link { margin-top: 11px; padding: 0; border: 0; background: transparent; color: #2d7650 !important; cursor: pointer; font-size: 10px !important; }
+
+.photon-modal-backdrop { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 18px; background: rgb(19 31 24 / 35%); }
+.photon-invite-modal { position: relative; width: min(100%, 390px); padding: 25px; border: 1px solid #e5eae5; border-radius: 7px; background: #fff; box-shadow: 0 16px 50px rgb(22 40 29 / 16%); }
+.photon-modal-close { position: absolute; top: 13px; right: 14px; border: 0; background: transparent; color: #728078 !important; cursor: pointer; font-size: 21px !important; }
+.photon-invite-modal h2 { margin: 7px 0 3px; font: 700 20px "Manrope", sans-serif; }
+.photon-invite-modal > p { margin: 0 0 18px; color: #748078; font-size: 11px; }
+.photon-invite-modal label { display: grid; gap: 5px; margin: 12px 0; color: #59675e; font-size: 10px; font-weight: 600; }
+.photon-invite-modal input { width: 100%; min-height: 37px; padding: 0 10px; border: 1px solid #dce4dd; border-radius: 4px; outline: none; color: var(--ph-ink); font-size: 11px; }
+.photon-invite-modal input:focus { border-color: #419165; box-shadow: 0 0 0 3px #e7f3ea; }
+.photon-modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.photon-modal-actions > button:first-child { padding: 0 11px; border: 1px solid #e1e7e1; border-radius: 4px; background: #fff; color: #66736a !important; cursor: pointer; font-size: 10px !important; }
+.photon-toast { position: fixed; right: 22px; bottom: 22px; z-index: 7; padding: 11px 14px; border: 1px solid #d5e7d8; border-radius: 5px; background: #fff; color: #276847; box-shadow: 0 6px 22px rgb(26 42 31 / 10%); font-size: 11px; animation: photon-toast-in .18s ease-out both; }
+@keyframes photon-toast-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 1100px) {
+  .photon-sidebar { width: 218px; }
+  .photon-main { margin-left: 218px; }
+  .photon-content { padding-right: 27px; padding-left: 27px; }
+  .photon-topbar { padding-right: 27px; padding-left: 27px; }
+  .photon-platform { gap: 7px; padding-right: 8px; padding-left: 8px; }
+  .photon-platform-copy small { font-size: 8px; }
+}
+
+@media (max-width: 760px) {
+  .photon-sidebar { position: sticky; top: 0; width: 100%; height: auto; padding: 10px 13px 0; border-right: 0; border-bottom: 1px solid var(--ph-line); }
+  .photon-brand { padding: 0 2px 10px; font-size: 17px !important; }
+  .photon-brand-mark { width: 25px; height: 25px; }
+  .photon-console-label { font-size: 8px; }
+  .photon-project, .photon-sidebar-bottom { display: none; }
+  .photon-nav { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  .photon-nav::-webkit-scrollbar { display: none; }
+  .photon-nav-group { display: flex; flex: 0 0 auto; gap: 2px; }
+  .photon-nav-label { display: none; }
+  .photon-nav-link { min-height: 37px; gap: 6px; padding: 0 9px; white-space: nowrap; font-size: 10px !important; }
+  .photon-nav-symbol { display: none; }
+  .photon-nav-count { min-width: 16px; height: 16px; }
+  .photon-main { margin-left: 0; }
+  .photon-topbar { position: static; height: 42px; padding: 0 16px; }
+  .photon-top-actions { gap: 10px; }
+  .photon-content { padding: 26px 16px 18px; }
+  .photon-page-heading h1 { font-size: 25px; }
+  .photon-page-heading p { max-width: 430px; font-size: 11px; }
+  .photon-completion { font-size: 9px; white-space: nowrap; }
+  .photon-step { grid-template-columns: 32px minmax(0, 1fr); gap: 10px; }
+  .photon-step-marker > span { width: 26px; height: 26px; font-size: 10px; }
+  .photon-step-marker > i { top: 27px; }
+  .photon-step-heading h2 { font-size: 14px; }
+  .photon-step-heading p { font-size: 10px; }
+  .photon-step-state { font-size: 8px; }
+  .photon-platform-grid { grid-template-columns: 1fr; gap: 7px; }
+  .photon-platform { min-height: 59px; align-items: center; padding: 9px; }
+  .photon-platform-copy small { font-size: 9px; }
+  .photon-platform-icon { width: 26px; height: 26px; }
+  .photon-test-layout { grid-template-columns: 1fr; }
+  .photon-next-panel { min-height: 123px; }
+  .photon-next-docs { flex-wrap: wrap; }
+  .photon-next-docs > a { margin: 0 0 0 39px; }
+  .photon-footer { margin-left: 42px; flex-wrap: wrap; }
+  .photon-section-page { padding-top: 31px; }
+}
+
+@media (max-width: 440px) {
+  .photon-content { padding-right: 12px; padding-left: 12px; }
+  .photon-topbar { padding: 0 12px; }
+  .photon-page-heading { align-items: flex-start; }
+  .photon-page-heading h1 { font-size: 22px; }
+  .photon-page-heading > .photon-completion { padding-top: 23px; }
+  .photon-step-heading { display: block; }
+  .photon-step-state { display: inline-block; margin-top: 8px; }
+  .photon-command-box > code { font-size: 9px; }
+  .photon-command-foot { align-items: flex-start; flex-direction: column; }
+  .photon-env-row { grid-template-columns: 1fr auto; }
+  .photon-env-row > code { grid-column: 1; grid-row: 2; }
+  .photon-env-row > button { grid-column: 2; grid-row: 1 / span 2; }
+  .photon-phone-number { font-size: 21px; }
+  .photon-next-docs > a { margin-left: 39px; }
+  .photon-footer { margin-left: 0; }
+  .photon-section-page .photon-page-heading { display: grid; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photon-shell *, .photon-shell *::before, .photon-shell *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
